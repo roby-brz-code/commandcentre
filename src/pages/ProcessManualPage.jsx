@@ -11,6 +11,37 @@ const STARTER_QUESTIONS = [
   "What's our net income trend?",
 ];
 
+function parseFollowUps(content) {
+  const pattern = /\n+\*{0,2}Want to dig deeper\??\*{0,2}\s*\n([\s\S]*?)$/i;
+  const match = content.match(pattern);
+  if (!match) return { body: content, followUps: [] };
+
+  const body = content.slice(0, match.index).trimEnd();
+  const listSection = match[1];
+  const followUps = [];
+  const bulletPattern = /^[\s]*[-*•]\s+['""']?(.+?)['""']?\s*$/gm;
+  let m;
+  while ((m = bulletPattern.exec(listSection)) !== null) {
+    let text = m[1].trim();
+    // Strip trailing question mark duplicates and surrounding quotes
+    text = text.replace(/^['""']+|['""']+$/g, '').trim();
+    if (text) followUps.push(text);
+  }
+
+  return { body, followUps };
+}
+
+function QuestionChip({ text, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="text-left text-sm px-4 py-2 bg-[#F1F5F9] border border-[#E2E8F0] rounded-full text-breeze-blue hover:bg-breeze-blue hover:text-white transition-colors cursor-pointer"
+    >
+      {text}
+    </button>
+  );
+}
+
 function OwlAvatar({ size = 28, className = '' }) {
   return (
     <img
@@ -31,8 +62,11 @@ function MarkdownLink({ href, children }) {
   );
 }
 
-function MessageBubble({ message }) {
+function MessageBubble({ message, onFollowUp }) {
   const isUser = message.role === 'user';
+  const { body, followUps } = isUser
+    ? { body: message.content, followUps: [] }
+    : parseFollowUps(message.content);
 
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-5`}>
@@ -41,23 +75,32 @@ function MessageBubble({ message }) {
           <OwlAvatar size={32} />
         </div>
       )}
-      <div
-        className={`max-w-[78%] rounded-xl px-5 py-4 text-sm ${
-          isUser
-            ? 'bg-breeze-blue text-white rounded-br-sm'
-            : 'bg-white border border-gray-200 text-gray-700 rounded-bl-sm shadow-card'
-        }`}
-      >
-        {isUser ? (
-          <p className="leading-relaxed">{message.content}</p>
-        ) : (
-          <div className="luca-markdown">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{ a: MarkdownLink }}
-            >
-              {message.content}
-            </ReactMarkdown>
+      <div className="flex flex-col max-w-[78%]">
+        <div
+          className={`rounded-xl px-5 py-4 text-sm ${
+            isUser
+              ? 'bg-breeze-blue text-white rounded-br-sm'
+              : 'bg-white border border-gray-200 text-gray-700 rounded-bl-sm shadow-card'
+          }`}
+        >
+          {isUser ? (
+            <p className="leading-relaxed">{message.content}</p>
+          ) : (
+            <div className="luca-markdown">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{ a: MarkdownLink }}
+              >
+                {body}
+              </ReactMarkdown>
+            </div>
+          )}
+        </div>
+        {followUps.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3 ml-1">
+            {followUps.map((q) => (
+              <QuestionChip key={q} text={q} onClick={() => onFollowUp(q)} />
+            ))}
           </div>
         )}
       </div>
@@ -192,15 +235,9 @@ export default function ProcessManualPage({ dataMode = 'demo' }) {
             <p className="text-sm text-gray-500 mb-8 text-center max-w-md">
               Ask about P&L, balance sheet, playbook processes, account balances, and more.
             </p>
-            <div className="grid grid-cols-2 gap-3 max-w-lg w-full">
+            <div className="flex flex-wrap justify-center gap-3 max-w-2xl">
               {STARTER_QUESTIONS.map((q) => (
-                <button
-                  key={q}
-                  onClick={() => sendMessage(q)}
-                  className="text-left text-sm px-4 py-3 bg-white border border-gray-200 rounded-xl hover:border-breeze-blue hover:bg-blue-50/50 transition-colors text-gray-600 hover:text-breeze-blue shadow-card cursor-pointer"
-                >
-                  {q}
-                </button>
+                <QuestionChip key={q} text={q} onClick={() => sendMessage(q)} />
               ))}
             </div>
           </div>
@@ -218,7 +255,7 @@ export default function ProcessManualPage({ dataMode = 'demo' }) {
               </button>
             </div>
             {messages.map((msg, i) => (
-              <MessageBubble key={i} message={msg} />
+              <MessageBubble key={i} message={msg} onFollowUp={sendMessage} />
             ))}
             {isLoading && messages[messages.length - 1]?.role === 'user' && <TypingIndicator />}
             <div ref={messagesEndRef} />
