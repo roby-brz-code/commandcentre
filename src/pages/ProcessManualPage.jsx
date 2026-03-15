@@ -6,9 +6,9 @@ const STARTER_QUESTIONS = [
   'How do I post revenue journals?',
   "What's the chargeback accounting process?",
   'Walk me through month-end close',
-  'How does CKO Clearing reconciliation work?',
-  'What are the prepaid amortization steps?',
-  'How is merchant setup handled?',
+  "What's the current CKO Clearing balance?",
+  'Show me a trial balance summary',
+  "What's the Merchant Funds Payable balance?",
 ];
 
 function OwlAvatar({ size = 28, className = '' }) {
@@ -28,6 +28,20 @@ function MarkdownLink({ href, children }) {
     <a href={href} target="_blank" rel="noopener noreferrer" className="text-breeze-blue underline hover:text-breeze-dark">
       {children}
     </a>
+  );
+}
+
+function DataModePill({ mode }) {
+  const isLive = mode === 'live';
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium ${
+      isLive
+        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+        : 'bg-amber-50 text-amber-600 border border-amber-200'
+    }`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+      {isLive ? 'Live Data' : 'Demo Data'}
+    </span>
   );
 }
 
@@ -87,16 +101,26 @@ function TypingIndicator() {
   );
 }
 
-export default function ProcessManualPage() {
+export default function ProcessManualPage({ dataMode }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const prevModeRef = useRef(dataMode);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
+
+  // Clear chat when data mode changes
+  useEffect(() => {
+    if (prevModeRef.current !== dataMode) {
+      setMessages([]);
+      setInput('');
+      prevModeRef.current = dataMode;
+    }
+  }, [dataMode]);
 
   async function sendMessage(text) {
     if (!text.trim() || isLoading) return;
@@ -113,7 +137,7 @@ export default function ProcessManualPage() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages, mode: dataMode }),
       });
 
       if (!res.ok) {
@@ -184,9 +208,12 @@ export default function ProcessManualPage() {
               className="w-24 h-24 mb-5"
             />
             <h2 className="text-xl font-semibold text-gray-800 mb-1">Hi, I'm Luca</h2>
-            <p className="text-xs text-gray-400 mb-1 italic">Named after Luca Pacioli, the father of double-entry bookkeeping</p>
+            <p className="text-xs text-gray-400 mb-2 italic">Named after Luca Pacioli, the father of double-entry bookkeeping</p>
+            <div className="mb-6">
+              <DataModePill mode={dataMode} />
+            </div>
             <p className="text-sm text-gray-500 mb-8 text-center max-w-md">
-              The Breeze finance brain. Ask about processes, playbook procedures, account codes, reconciliation, and more.
+              The Breeze finance brain. Ask about processes, playbook procedures, account balances, GL data, and more.
             </p>
             <div className="grid grid-cols-2 gap-3 max-w-lg w-full">
               {STARTER_QUESTIONS.map((q) => (
@@ -202,7 +229,8 @@ export default function ProcessManualPage() {
           </div>
         ) : (
           <div className="max-w-3xl mx-auto">
-            <div className="flex justify-end mb-4">
+            <div className="flex items-center justify-between mb-4">
+              <DataModePill mode={dataMode} />
               <button
                 onClick={() => { setMessages([]); setInput(''); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-breeze-blue transition-colors cursor-pointer shadow-card"
@@ -243,7 +271,7 @@ export default function ProcessManualPage() {
           </button>
         </form>
         <p className="text-xs text-gray-400 text-center mt-2">
-          Luca answers from the Breeze Finance Playbook. Responses may need verification.
+          Luca answers from the Breeze Finance Playbook and GL data. Responses may need verification.
         </p>
       </div>
     </div>
