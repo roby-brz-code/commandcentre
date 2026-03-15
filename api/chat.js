@@ -35,6 +35,16 @@ function loadCSV(filename) {
   }
 }
 
+const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i;
+
+function detectModel(messages) {
+  const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user');
+  if (!lastUserMsg) return 'moonshotai/kimi-k2';
+  return FINANCIAL_KEYWORDS.test(lastUserMsg.content)
+    ? 'anthropic/claude-sonnet-4'
+    : 'moonshotai/kimi-k2';
+}
+
 function loadFinancialData(mode) {
   if (mode === 'live') {
     return {
@@ -58,6 +68,24 @@ const SYSTEM_PROMPT = `You are Luca, the Breeze Finance Operations Assistant —
 - Be concise and direct — your audience is finance professionals who need precise, actionable answers.
 - Format responses with markdown: use code blocks for journal entries and SQL, tables where helpful, bullet points for steps.
 - If asked something outside the scope of the playbook and financial data, clearly state that it's not covered.
+
+## Analytical behavior for financial data questions
+When answering questions about financial data, don't just return the number. Be an analytical finance partner:
+
+1. **Give the answer first** — always lead with the direct answer to the question.
+2. **Add context** — compare to previous month, show the trend direction, note if it's unusual.
+3. **Flag anomalies** — if a line item spiked or dropped significantly (>20% MoM change), call it out proactively.
+4. **Suggest follow-ups** — at the end of your response, suggest 2-3 natural follow-up questions the user might want to ask.
+
+For example, if asked "What was software spend in January?":
+- Lead with the number: "$37,470"
+- Add context: "This is down 53% from December ($79,168), which included an annual renewal"
+- Note the trend: "Software has averaged $X/month over the last 6 months"
+- Suggest follow-ups: "Want me to break down the vendors?" / "How does this compare to the trailing 3-month average?"
+
+When transaction-level detail is available, proactively offer to drill down into the composition of any line item.
+
+Format suggested follow-up questions as a bulleted list at the end of your response under a heading like **Want to dig deeper?** — make them specific to the data just discussed, not generic.
 
 ## Financial data notes
 - The P&L data is monthly totals per account. Rows format: Report, Report date, Account id, Account name, Amount.
@@ -153,6 +181,9 @@ export default async function handler(req, res) {
     systemContent += FIN_UNAVAILABLE;
   }
 
+  const model = detectModel(messages);
+  console.log(`Model selected: ${model}`);
+
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -165,7 +196,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'moonshotai/kimi-k2',
+        model,
         max_tokens: 4096,
         stream: true,
         messages: [
