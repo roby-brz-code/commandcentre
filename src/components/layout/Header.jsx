@@ -1,7 +1,10 @@
 const tabLabels = {
-  dashboard: 'Dashboard',
+  manual: 'Process Manual',
+  dashboard: 'Cash Dashboard',
   query: 'Query',
   recon: 'Recon Status',
+  tasks: "Today's Tasks",
+  tax: 'Tax Calendar',
 };
 
 export default function Header({ activeTab }) {
@@ -13,8 +16,8 @@ export default function Header({ activeTab }) {
         <span className="text-gray-700 font-medium">{tabLabels[activeTab]}</span>
       </div>
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
-          <span className="text-emerald-700 text-xs font-semibold">BL</span>
+        <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+          <span className="text-breeze-blue text-xs font-semibold">BL</span>
         </div>
       </div>
     </header>
