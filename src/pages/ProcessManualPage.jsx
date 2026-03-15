@@ -153,6 +153,7 @@ export default function ProcessManualPage() {
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center h-full">
+
             <div className="w-14 h-14 rounded-2xl bg-breeze-blue flex items-center justify-center mb-5">
               <span className="text-white text-2xl font-bold">M</span>
             </div>
@@ -175,6 +176,17 @@ export default function ProcessManualPage() {
           </div>
         ) : (
           <div className="max-w-3xl mx-auto">
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => { setMessages([]); setInput(''); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-breeze-blue transition-colors cursor-pointer shadow-card"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                New Chat
+              </button>
+            </div>
             {messages.map((msg, i) => (
               <MessageBubble key={i} message={msg} />
             ))}

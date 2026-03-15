@@ -1,6 +1,6 @@
 const tabs = [
   { id: 'manual', label: 'Process Manual', icon: BookIcon, active: true },
-  { id: 'dashboard', label: 'Cash Dashboard', icon: BarChartIcon, comingSoon: true },
+  { id: 'dashboard', label: 'Cash Dashboard', icon: BarChartIcon },
   { id: 'tasks', label: "Today's Tasks", icon: ClipboardIcon, comingSoon: true },
   { id: 'recon', label: 'Recon Status', icon: CheckCircleIcon, comingSoon: true },
   { id: 'tax', label: 'Tax Calendar', icon: CalendarIcon, comingSoon: true },
