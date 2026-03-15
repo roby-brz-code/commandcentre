@@ -87,7 +87,7 @@ function TypingIndicator() {
   );
 }
 
-export default function ProcessManualPage() {
+export default function ProcessManualPage({ dataMode = 'demo' }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -97,6 +97,11 @@ export default function ProcessManualPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
+
+  useEffect(() => {
+    setMessages([]);
+    setInput('');
+  }, [dataMode]);
 
   async function sendMessage(text) {
     if (!text.trim() || isLoading) return;
@@ -113,7 +118,7 @@ export default function ProcessManualPage() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages, mode: dataMode }),
       });
 
       if (!res.ok) {
@@ -200,7 +205,7 @@ export default function ProcessManualPage() {
             </div>
           </div>
         ) : (
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-[960px] mx-auto">
             <div className="flex justify-end mb-4">
               <button
                 onClick={() => { setMessages([]); setInput(''); }}
@@ -223,7 +228,7 @@ export default function ProcessManualPage() {
 
       {/* Input area */}
       <div className="border-t border-gray-200 bg-white px-6 py-4">
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto flex gap-3">
+        <form onSubmit={handleSubmit} className="max-w-[960px] mx-auto flex gap-3">
           <input
             ref={inputRef}
             type="text"

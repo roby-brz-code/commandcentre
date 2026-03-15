@@ -1,7 +1,8 @@
-import { readFileSync, readdirSync } from 'fs';
+import { readFileSync, readdirSync, existsSync } from 'fs';
 import { join } from 'path';
 
 const PLAYBOOK_DIR = join(process.cwd(), 'public', 'playbook');
+const DATA_DIR = join(process.cwd(), 'public', 'data');
 
 function loadPlaybookContent() {
   try {
@@ -24,32 +25,27 @@ function loadPlaybookContent() {
   }
 }
 
-// Financial data cache
-const finCache = { pl: { data: null, fetchedAt: 0 }, bs: { data: null, fetchedAt: 0 } };
-const CACHE_TTL = 5 * 60 * 1000;
-
-async function fetchSheetCSV(sheetId, cacheKey) {
-  if (!sheetId) return null;
-
-  const now = Date.now();
-  const cached = finCache[cacheKey];
-  if (cached.data && (now - cached.fetchedAt) < CACHE_TTL) {
-    return cached.data;
-  }
-
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
-
+function loadCSV(filename) {
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-    if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
-    const csv = await res.text();
-    finCache[cacheKey] = { data: csv, fetchedAt: now };
-    return csv;
-  } catch (error) {
-    console.error(`Sheet fetch error (${cacheKey}):`, error.message);
-    if (cached.data) return cached.data;
+    const path = join(DATA_DIR, filename);
+    if (!existsSync(path)) return null;
+    return readFileSync(path, 'utf-8');
+  } catch {
     return null;
   }
+}
+
+function loadFinancialData(mode) {
+  if (mode === 'live') {
+    return {
+      pl: loadCSV('pl_live.csv'),
+      bs: loadCSV('bs_live.csv'),
+    };
+  }
+  return {
+    pl: loadCSV('dummy_pl.csv'),
+    bs: loadCSV('dummy_bs.csv'),
+  };
 }
 
 const SYSTEM_PROMPT = `You are Luca, the Breeze Finance Operations Assistant — named after Luca Pacioli, the father of double-entry bookkeeping. You are the finance brain for Breeze, helping the team understand processes, query financial data, and run the finance function efficiently.
@@ -62,6 +58,11 @@ const SYSTEM_PROMPT = `You are Luca, the Breeze Finance Operations Assistant —
 - Be concise and direct — your audience is finance professionals who need precise, actionable answers.
 - Format responses with markdown: use code blocks for journal entries and SQL, tables where helpful, bullet points for steps.
 - If asked something outside the scope of the playbook and financial data, clearly state that it's not covered.
+
+## Financial data notes
+- The P&L data is monthly totals per account. Rows format: Report, Report date, Account id, Account name, Amount.
+- The Balance Sheet data is monthly snapshots. Account names as rows, months as columns.
+- Data is synced from QuickBooks via Coupler.io.
 
 ## Playbook Section Links (Notion)
 When you reference a specific playbook section in your response, include a clickable link to the Notion source at the end of your response.
@@ -91,9 +92,9 @@ const PL_PROMPT = `
 
 ---
 
-## Profit & Loss Data (Live from QuickBooks via Coupler.io)
+## Profit & Loss Data (from QuickBooks via Coupler.io)
 
-The following is the current P&L data exported from QuickBooks, auto-synced daily. The data is monthly totals per account in CSV format with columns: Report, Report date, Account id, Account name, Amount. Use this to answer questions about revenue, expenses, margins, and trends over time.
+Monthly totals per account in CSV format (Report, Report date, Account id, Account name, Amount). Use this to answer questions about revenue, expenses, margins, and trends over time.
 
 `;
 
@@ -101,9 +102,9 @@ const BS_PROMPT = `
 
 ---
 
-## Balance Sheet Data (Live from QuickBooks via Coupler.io)
+## Balance Sheet Data (from QuickBooks via Coupler.io)
 
-The following is the current Balance Sheet data exported from QuickBooks, auto-synced daily. The data is monthly snapshots in CSV format with account names as rows and months as columns. Use this to answer questions about current balances, assets, liabilities, equity, and cash positions.
+Monthly snapshots in CSV format (account names as rows, months as columns). Use this to answer questions about current balances, assets, liabilities, equity, and cash positions.
 
 `;
 
@@ -113,7 +114,7 @@ const FIN_UNAVAILABLE = `
 
 ## Financial Data
 
-P&L and Balance Sheet data are not currently connected. You can only answer process/playbook questions. If asked about current balances, revenue, or financial data, let the user know that financial data isn't available yet and suggest checking QuickBooks directly.
+P&L and Balance Sheet data files are not available. You can only answer process/playbook questions. If asked about current balances, revenue, or financial data, let the user know that financial data isn't connected yet.
 
 `;
 
@@ -122,8 +123,6 @@ export default async function handler(req, res) {
     return res.status(200).json({
       status: 'ok',
       hasApiKey: !!process.env.OPENROUTER_API_KEY,
-      hasPL: !!process.env.PL_SHEET_ID,
-      hasBS: !!process.env.BS_SHEET_ID,
     });
   }
 
@@ -131,7 +130,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages } = req.body;
+  const { messages, mode = 'demo' } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'messages array is required' });
@@ -142,19 +141,14 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'OPENROUTER_API_KEY is not configured' });
   }
 
-  // Fetch playbook and financial data in parallel
-  const [playbook, plData, bsData] = await Promise.all([
-    Promise.resolve(loadPlaybookContent()),
-    fetchSheetCSV(process.env.PL_SHEET_ID, 'pl'),
-    fetchSheetCSV(process.env.BS_SHEET_ID, 'bs'),
-  ]);
+  const playbook = loadPlaybookContent();
+  const { pl, bs } = loadFinancialData(mode === 'live' ? 'live' : 'demo');
 
   let systemContent = SYSTEM_PROMPT + (playbook || '(No playbook files found.)');
 
-  const hasFinData = plData || bsData;
-  if (hasFinData) {
-    if (plData) systemContent += PL_PROMPT + plData;
-    if (bsData) systemContent += BS_PROMPT + bsData;
+  if (pl || bs) {
+    if (pl) systemContent += PL_PROMPT + pl;
+    if (bs) systemContent += BS_PROMPT + bs;
   } else {
     systemContent += FIN_UNAVAILABLE;
   }

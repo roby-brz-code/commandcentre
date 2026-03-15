@@ -69,7 +69,7 @@ const externalLinks = [
   { label: 'CKO Hub', href: 'https://hub.checkout.com' },
 ];
 
-export default function Sidebar({ activeTab, onTabChange }) {
+export default function Sidebar({ activeTab, onTabChange, dataMode, onDataModeChange }) {
   return (
     <aside className="w-60 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
       {/* Brand */}
@@ -127,8 +127,20 @@ export default function Sidebar({ activeTab, onTabChange }) {
         ))}
       </nav>
 
-      <div className="px-4 py-4 border-t border-gray-100 text-xs text-gray-400">
-        Luca v0.5 &middot; Breeze
+      <div className="px-4 py-4 border-t border-gray-100">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Data</span>
+          <button
+            onClick={() => onDataModeChange(dataMode === 'demo' ? 'live' : 'demo')}
+            className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium rounded-md transition-colors cursor-pointer border border-gray-200 hover:border-gray-300"
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${dataMode === 'live' ? 'bg-green-500' : 'bg-amber-400'}`} />
+            <span className={dataMode === 'live' ? 'text-green-700' : 'text-amber-600'}>
+              {dataMode === 'live' ? 'Live' : 'Demo'}
+            </span>
+          </button>
+        </div>
+        <p className="text-xs text-gray-400">Luca v0.5 &middot; Breeze</p>
       </div>
     </aside>
   );
