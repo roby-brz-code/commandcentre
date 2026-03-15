@@ -24,32 +24,29 @@ function loadPlaybookContent() {
   }
 }
 
-// GL data cache: { demo: { data, fetchedAt }, live: { data, fetchedAt } }
-const glCache = { demo: { data: null, fetchedAt: 0 }, live: { data: null, fetchedAt: 0 } };
-const GL_CACHE_TTL = 5 * 60 * 1000;
+// Financial data cache
+const finCache = { pl: { data: null, fetchedAt: 0 }, bs: { data: null, fetchedAt: 0 } };
+const CACHE_TTL = 5 * 60 * 1000;
 
-async function fetchGLData(mode) {
-  const sheetId = process.env.GL_SHEET_ID;
+async function fetchSheetCSV(sheetId, cacheKey) {
   if (!sheetId) return null;
 
   const now = Date.now();
-  const cached = glCache[mode];
-  if (cached.data && (now - cached.fetchedAt) < GL_CACHE_TTL) {
+  const cached = finCache[cacheKey];
+  if (cached.data && (now - cached.fetchedAt) < CACHE_TTL) {
     return cached.data;
   }
 
-  const sheetName = mode === 'live' ? 'Actual' : 'Dummy';
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
 
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
     if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
     const csv = await res.text();
-    glCache[mode] = { data: csv, fetchedAt: now };
+    finCache[cacheKey] = { data: csv, fetchedAt: now };
     return csv;
   } catch (error) {
-    console.error(`GL fetch error (${mode}):`, error.message);
-    // Return stale cache if available
+    console.error(`Sheet fetch error (${cacheKey}):`, error.message);
     if (cached.data) return cached.data;
     return null;
   }
@@ -59,34 +56,64 @@ const SYSTEM_PROMPT = `You are Luca, the Breeze Finance Operations Assistant —
 
 ## Your role
 - Answer questions about Breeze finance processes using the playbook content below.
-- Answer questions about current financial data using the General Ledger data below (when available).
+- Answer questions about current financial data using the P&L and Balance Sheet data below (when available).
 - Reference specific account numbers, journal entries, SQL tables, processes, and systems.
-- When referencing financial data, cite specific account names and numbers from the GL.
+- When referencing financial data, cite specific account names, numbers, and time periods.
 - Be concise and direct — your audience is finance professionals who need precise, actionable answers.
 - Format responses with markdown: use code blocks for journal entries and SQL, tables where helpful, bullet points for steps.
-- If asked something outside the scope of the playbook and GL data, clearly state that it's not covered.
+- If asked something outside the scope of the playbook and financial data, clearly state that it's not covered.
+
+## Playbook Section Links (Notion)
+When you reference a specific playbook section in your response, include a clickable link to the Notion source at the end of your response.
+Format: 📖 Source: [Section Name](notion_url)
+If you reference multiple sections, list all relevant links.
+
+- Section 0 (Operating Cadence): https://www.notion.so/breezecash/0-Operating-Cadence-31eafd1ab00281078ac8dd452ecf6ee9
+- Section 1 (Revenue Recognition): https://www.notion.so/breezecash/1-Revenue-Recognition-31eafd1ab002815eb629fc9d5f1824dc
+- Section 2 (Chargeback Accounting): https://www.notion.so/breezecash/2-Chargeback-Accounting-31eafd1ab0028112b036d54022198ef1
+- Section 3 (Month-End Close): https://www.notion.so/breezecash/3-Month-End-Close-Checklist-31eafd1ab00281c78d35da7f18e91836
+- Section 4 (Prepaid Amortization): https://www.notion.so/breezecash/4-Prepaid-Amortization-Year-End-31eafd1ab0028196806fd0857a0266c5
+- Section 5 (Settlement Operations): https://www.notion.so/breezecash/5-Settlement-Operations-31eafd1ab0028196a543ce97ea8091eb
+- Section 6 (Reconciliation): https://www.notion.so/breezecash/6-Reconciliation-31eafd1ab00281a6b357ef0b7e4f0f12
+- Section 7 (AP, Billing & Expenses): https://www.notion.so/breezecash/7-AP-Billing-Expenses-31eafd1ab0028181b3ccc4dda3831a65
+- Section 8 (Merchant Setup): https://www.notion.so/breezecash/8-Merchant-Setup-Underwriting-31eafd1ab002816bb179f5611c60a75e
+- Section 9 (Treasury & Cash Management): https://www.notion.so/breezecash/9-Treasury-Cash-Management-31eafd1ab00281338eb8fa21b5667701
+- Section 10 (Tax & Compliance): https://www.notion.so/breezecash/10-Tax-Compliance-31eafd1ab00281a6b083cc607ed8d4b2
+- Section 11 (FP&A): https://www.notion.so/breezecash/11-FP-A-Strategic-Finance-31eafd1ab002813c876fd10a732af641
+- Section 12 (Data & Analytics): https://www.notion.so/breezecash/12-Data-Analytics-Infrastructure-31eafd1ab00281b2ba77f9ff132381b6
+- Full Playbook: https://www.notion.so/breezecash/Finance-Playbook-v2-31eafd1ab002813c9d46f5237bcfa989
 
 ## Breeze Finance Playbook
 
 `;
 
-const GL_PROMPT_SECTION = `
+const PL_PROMPT = `
 
 ---
 
-## General Ledger Data (Live from QuickBooks)
+## Profit & Loss Data (Live from QuickBooks via Coupler.io)
 
-The following is the current General Ledger data exported from QuickBooks, synced automatically via Coupler.io. Use this data to answer questions about current balances, account activity, trial balance summaries, and specific transactions. The data is in CSV format.
+The following is the current P&L data exported from QuickBooks, auto-synced daily. The data is monthly totals per account in CSV format with columns: Report, Report date, Account id, Account name, Amount. Use this to answer questions about revenue, expenses, margins, and trends over time.
 
 `;
 
-const GL_UNAVAILABLE = `
+const BS_PROMPT = `
 
 ---
 
-## General Ledger Data
+## Balance Sheet Data (Live from QuickBooks via Coupler.io)
 
-GL data is not currently connected. You can only answer process/playbook questions. If asked about current balances or financial data, let the user know that GL data isn't available yet.
+The following is the current Balance Sheet data exported from QuickBooks, auto-synced daily. The data is monthly snapshots in CSV format with account names as rows and months as columns. Use this to answer questions about current balances, assets, liabilities, equity, and cash positions.
+
+`;
+
+const FIN_UNAVAILABLE = `
+
+---
+
+## Financial Data
+
+P&L and Balance Sheet data are not currently connected. You can only answer process/playbook questions. If asked about current balances, revenue, or financial data, let the user know that financial data isn't available yet and suggest checking QuickBooks directly.
 
 `;
 
@@ -95,7 +122,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       status: 'ok',
       hasApiKey: !!process.env.OPENROUTER_API_KEY,
-      hasGLSheet: !!process.env.GL_SHEET_ID,
+      hasPL: !!process.env.PL_SHEET_ID,
+      hasBS: !!process.env.BS_SHEET_ID,
     });
   }
 
@@ -103,7 +131,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages, mode = 'demo' } = req.body;
+  const { messages } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'messages array is required' });
@@ -114,15 +142,21 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'OPENROUTER_API_KEY is not configured' });
   }
 
-  const playbook = loadPlaybookContent();
-  const glData = await fetchGLData(mode === 'live' ? 'live' : 'demo');
+  // Fetch playbook and financial data in parallel
+  const [playbook, plData, bsData] = await Promise.all([
+    Promise.resolve(loadPlaybookContent()),
+    fetchSheetCSV(process.env.PL_SHEET_ID, 'pl'),
+    fetchSheetCSV(process.env.BS_SHEET_ID, 'bs'),
+  ]);
 
   let systemContent = SYSTEM_PROMPT + (playbook || '(No playbook files found.)');
 
-  if (glData) {
-    systemContent += GL_PROMPT_SECTION + glData;
+  const hasFinData = plData || bsData;
+  if (hasFinData) {
+    if (plData) systemContent += PL_PROMPT + plData;
+    if (bsData) systemContent += BS_PROMPT + bsData;
   } else {
-    systemContent += GL_UNAVAILABLE;
+    systemContent += FIN_UNAVAILABLE;
   }
 
   res.setHeader('Content-Type', 'text/event-stream');

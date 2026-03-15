@@ -69,7 +69,7 @@ const externalLinks = [
   { label: 'CKO Hub', href: 'https://hub.checkout.com' },
 ];
 
-export default function Sidebar({ activeTab, onTabChange, dataMode, onModeChange }) {
+export default function Sidebar({ activeTab, onTabChange }) {
   return (
     <aside className="w-60 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
       {/* Brand */}
@@ -127,35 +127,8 @@ export default function Sidebar({ activeTab, onTabChange, dataMode, onModeChange
         ))}
       </nav>
 
-      {/* Data mode toggle */}
-      <div className="px-4 py-3 border-t border-gray-100">
-        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Data Source</p>
-        <div className="flex bg-gray-100 rounded-lg p-0.5">
-          <button
-            onClick={() => onModeChange('demo')}
-            className={`flex-1 text-[11px] font-medium py-1.5 rounded-md transition-colors cursor-pointer ${
-              dataMode === 'demo'
-                ? 'bg-white text-amber-600 shadow-sm'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            Demo
-          </button>
-          <button
-            onClick={() => onModeChange('live')}
-            className={`flex-1 text-[11px] font-medium py-1.5 rounded-md transition-colors cursor-pointer ${
-              dataMode === 'live'
-                ? 'bg-white text-emerald-600 shadow-sm'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            Live
-          </button>
-        </div>
-      </div>
-
-      <div className="px-4 py-3 border-t border-gray-100 text-xs text-gray-400">
-        Luca v0.4 &middot; Breeze
+      <div className="px-4 py-4 border-t border-gray-100 text-xs text-gray-400">
+        Luca v0.5 &middot; Breeze
       </div>
     </aside>
   );

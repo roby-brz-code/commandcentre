@@ -3,12 +3,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 const STARTER_QUESTIONS = [
-  'How do I post revenue journals?',
-  "What's the chargeback accounting process?",
-  'Walk me through month-end close',
+  'What was Payin Revenue last month?',
+  'How are CKO Fees trending?',
   "What's the current CKO Clearing balance?",
-  'Show me a trial balance summary',
   "What's the Merchant Funds Payable balance?",
+  'Show me a P&L summary for January 2026',
+  "What's our net income trend?",
 ];
 
 function OwlAvatar({ size = 28, className = '' }) {
@@ -25,23 +25,9 @@ function OwlAvatar({ size = 28, className = '' }) {
 
 function MarkdownLink({ href, children }) {
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="text-breeze-blue underline hover:text-breeze-dark">
+    <a href={href} target="_blank" rel="noopener noreferrer" className="text-breeze-blue underline decoration-breeze-blue/30 hover:text-breeze-dark hover:decoration-breeze-dark/50 transition-colors">
       {children}
     </a>
-  );
-}
-
-function DataModePill({ mode }) {
-  const isLive = mode === 'live';
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium ${
-      isLive
-        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-        : 'bg-amber-50 text-amber-600 border border-amber-200'
-    }`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-      {isLive ? 'Live Data' : 'Demo Data'}
-    </span>
   );
 }
 
@@ -49,23 +35,23 @@ function MessageBubble({ message }) {
   const isUser = message.role === 'user';
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-5`}>
       {!isUser && (
         <div className="mr-3 mt-1">
           <OwlAvatar size={32} />
         </div>
       )}
       <div
-        className={`max-w-[75%] rounded-xl px-4 py-3 text-sm leading-relaxed ${
+        className={`max-w-[78%] rounded-xl px-5 py-4 text-sm ${
           isUser
             ? 'bg-breeze-blue text-white rounded-br-sm'
             : 'bg-white border border-gray-200 text-gray-700 rounded-bl-sm shadow-card'
         }`}
       >
         {isUser ? (
-          <p>{message.content}</p>
+          <p className="leading-relaxed">{message.content}</p>
         ) : (
-          <div className="prose prose-sm max-w-none prose-headings:text-gray-800 prose-headings:font-semibold prose-p:text-gray-700 prose-code:text-breeze-blue prose-code:bg-blue-50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg prose-table:text-xs prose-th:bg-gray-50 prose-th:px-3 prose-th:py-2 prose-td:px-3 prose-td:py-2 prose-td:border-gray-200">
+          <div className="luca-markdown">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{ a: MarkdownLink }}
@@ -86,11 +72,11 @@ function MessageBubble({ message }) {
 
 function TypingIndicator() {
   return (
-    <div className="flex justify-start mb-4">
+    <div className="flex justify-start mb-5">
       <div className="mr-3 mt-1">
         <OwlAvatar size={32} className="luca-thinking" />
       </div>
-      <div className="bg-white border border-gray-200 rounded-xl rounded-bl-sm px-4 py-3 shadow-card">
+      <div className="bg-white border border-gray-200 rounded-xl rounded-bl-sm px-5 py-4 shadow-card">
         <div className="flex gap-1.5">
           <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
           <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -101,26 +87,16 @@ function TypingIndicator() {
   );
 }
 
-export default function ProcessManualPage({ dataMode }) {
+export default function ProcessManualPage() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-  const prevModeRef = useRef(dataMode);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
-
-  // Clear chat when data mode changes
-  useEffect(() => {
-    if (prevModeRef.current !== dataMode) {
-      setMessages([]);
-      setInput('');
-      prevModeRef.current = dataMode;
-    }
-  }, [dataMode]);
 
   async function sendMessage(text) {
     if (!text.trim() || isLoading) return;
@@ -137,7 +113,7 @@ export default function ProcessManualPage({ dataMode }) {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages, mode: dataMode }),
+        body: JSON.stringify({ messages: newMessages }),
       });
 
       if (!res.ok) {
@@ -208,12 +184,9 @@ export default function ProcessManualPage({ dataMode }) {
               className="w-24 h-24 mb-5"
             />
             <h2 className="text-xl font-semibold text-gray-800 mb-1">Hi, I'm Luca</h2>
-            <p className="text-xs text-gray-400 mb-2 italic">Named after Luca Pacioli, the father of double-entry bookkeeping</p>
-            <div className="mb-6">
-              <DataModePill mode={dataMode} />
-            </div>
+            <p className="text-xs text-gray-400 mb-6 italic">Named after Luca Pacioli, the father of double-entry bookkeeping</p>
             <p className="text-sm text-gray-500 mb-8 text-center max-w-md">
-              The Breeze finance brain. Ask about processes, playbook procedures, account balances, GL data, and more.
+              The Breeze finance brain. Ask about P&L, balance sheet, playbook processes, account balances, and more.
             </p>
             <div className="grid grid-cols-2 gap-3 max-w-lg w-full">
               {STARTER_QUESTIONS.map((q) => (
@@ -229,8 +202,7 @@ export default function ProcessManualPage({ dataMode }) {
           </div>
         ) : (
           <div className="max-w-3xl mx-auto">
-            <div className="flex items-center justify-between mb-4">
-              <DataModePill mode={dataMode} />
+            <div className="flex justify-end mb-4">
               <button
                 onClick={() => { setMessages([]); setInput(''); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-breeze-blue transition-colors cursor-pointer shadow-card"
@@ -271,7 +243,7 @@ export default function ProcessManualPage({ dataMode }) {
           </button>
         </form>
         <p className="text-xs text-gray-400 text-center mt-2">
-          Luca answers from the Breeze Finance Playbook and GL data. Responses may need verification.
+          Luca answers from the Breeze Finance Playbook, P&L, and Balance Sheet. Responses may need verification.
         </p>
       </div>
     </div>
