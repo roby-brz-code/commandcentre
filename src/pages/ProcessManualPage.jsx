@@ -183,10 +183,9 @@ export default function ProcessManualPage() {
               alt="Luca"
               className="w-24 h-24 mb-5"
             />
-            <h2 className="text-xl font-semibold text-gray-800 mb-1">Hi, I'm Luca</h2>
-            <p className="text-xs text-gray-400 mb-6 italic">Named after Luca Pacioli, the father of double-entry bookkeeping</p>
+            <h2 className="text-xl font-semibold text-gray-800 mb-1">Luca</h2>
             <p className="text-sm text-gray-500 mb-8 text-center max-w-md">
-              The Breeze finance brain. Ask about P&L, balance sheet, playbook processes, account balances, and more.
+              Ask about P&L, balance sheet, playbook processes, account balances, and more.
             </p>
             <div className="grid grid-cols-2 gap-3 max-w-lg w-full">
               {STARTER_QUESTIONS.map((q) => (
