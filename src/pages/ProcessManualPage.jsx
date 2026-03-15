@@ -11,6 +11,14 @@ const STARTER_QUESTIONS = [
   'How is merchant setup handled?',
 ];
 
+function MarkdownLink({ href, children }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="text-breeze-blue underline hover:text-breeze-dark">
+      {children}
+    </a>
+  );
+}
+
 function MessageBubble({ message }) {
   const isUser = message.role === 'user';
 
@@ -18,7 +26,7 @@ function MessageBubble({ message }) {
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
       {!isUser && (
         <div className="w-7 h-7 rounded-full bg-breeze-blue flex items-center justify-center mr-3 mt-1 shrink-0">
-          <span className="text-white text-xs font-bold">M</span>
+          <span className="text-white text-xs font-bold">L</span>
         </div>
       )}
       <div
@@ -32,7 +40,12 @@ function MessageBubble({ message }) {
           <p>{message.content}</p>
         ) : (
           <div className="prose prose-sm max-w-none prose-headings:text-gray-800 prose-headings:font-semibold prose-p:text-gray-700 prose-code:text-breeze-blue prose-code:bg-blue-50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg prose-table:text-xs prose-th:bg-gray-50 prose-th:px-3 prose-th:py-2 prose-td:px-3 prose-td:py-2 prose-td:border-gray-200">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{ a: MarkdownLink }}
+            >
+              {message.content}
+            </ReactMarkdown>
           </div>
         )}
       </div>
@@ -49,7 +62,7 @@ function TypingIndicator() {
   return (
     <div className="flex justify-start mb-4">
       <div className="w-7 h-7 rounded-full bg-breeze-blue flex items-center justify-center mr-3 mt-1 shrink-0">
-        <span className="text-white text-xs font-bold">M</span>
+        <span className="text-white text-xs font-bold">L</span>
       </div>
       <div className="bg-white border border-gray-200 rounded-xl rounded-bl-sm px-4 py-3 shadow-card">
         <div className="flex gap-1.5">
@@ -153,14 +166,13 @@ export default function ProcessManualPage() {
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center h-full">
-
             <div className="w-14 h-14 rounded-2xl bg-breeze-blue flex items-center justify-center mb-5">
-              <span className="text-white text-2xl font-bold">M</span>
+              <span className="text-white text-2xl font-bold">L</span>
             </div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">Breeze Process Manual</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-1">Luca</h2>
+            <p className="text-xs text-gray-400 mb-1 italic">Named after Luca Pacioli, the father of double-entry bookkeeping</p>
             <p className="text-sm text-gray-500 mb-8 text-center max-w-md">
-              Ask Marvin anything about Breeze finance operations — revenue recognition, reconciliation,
-              month-end close, and more.
+              The Breeze finance brain. Ask about processes, playbook procedures, account codes, reconciliation, and more.
             </p>
             <div className="grid grid-cols-2 gap-3 max-w-lg w-full">
               {STARTER_QUESTIONS.map((q) => (
@@ -204,7 +216,7 @@ export default function ProcessManualPage() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about Breeze finance processes..."
+            placeholder="Ask Luca about Breeze finance..."
             disabled={isLoading}
             className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-breeze-blue/20 focus:border-breeze-blue disabled:opacity-50 transition-colors"
           />
@@ -217,7 +229,7 @@ export default function ProcessManualPage() {
           </button>
         </form>
         <p className="text-xs text-gray-400 text-center mt-2">
-          Marvin answers from the Breeze Finance Playbook. Responses may need verification.
+          Luca answers from the Breeze Finance Playbook. Responses may need verification.
         </p>
       </div>
     </div>
