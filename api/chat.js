@@ -1,4 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
@@ -49,40 +48,82 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'messages array is required' });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY is not configured' });
+    return res.status(500).json({ error: 'OPENROUTER_API_KEY is not configured' });
   }
 
   const playbook = loadPlaybookContent();
-
-  const client = new Anthropic({ apiKey });
+  const systemContent = SYSTEM_PROMPT + (playbook || '(No playbook files found. Please add markdown files to /public/playbook/)');
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
   try {
-    const stream = await client.messages.stream({
-      model: 'claude-opus-4-6',
-      max_tokens: 4096,
-      system: SYSTEM_PROMPT + (playbook || '(No playbook files found. Please add markdown files to /public/playbook/)'),
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'moonshotai/kimi-k2',
+        max_tokens: 4096,
+        stream: true,
+        messages: [
+          { role: 'system', content: systemContent },
+          ...messages.map((m) => ({ role: m.role, content: m.content })),
+        ],
+      }),
     });
 
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta?.text) {
-        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
+    if (!response.ok) {
+      const err = await response.text();
+      console.error('OpenRouter API error:', err);
+      if (!res.headersSent) {
+        return res.status(502).json({ error: 'Failed to get response from AI' });
       }
     }
 
-    res.write('data: [DONE]\n\n');
-    res.end();
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') {
+            res.write('data: [DONE]\n\n');
+            break;
+          }
+          try {
+            const parsed = JSON.parse(data);
+            const text = parsed.choices?.[0]?.delta?.content;
+            if (text) {
+              res.write(`data: ${JSON.stringify({ text })}\n\n`);
+            }
+          } catch {
+            // skip malformed chunks
+          }
+        }
+      }
+    }
+
+    if (!res.writableEnded) {
+      res.write('data: [DONE]\n\n');
+      res.end();
+    }
   } catch (error) {
-    console.error('Anthropic API error:', error);
+    console.error('OpenRouter API error:', error);
     if (!res.headersSent) {
       res.status(500).json({ error: 'Failed to get response from AI' });
     } else {
