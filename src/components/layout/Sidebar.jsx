@@ -75,9 +75,7 @@ export default function Sidebar({ activeTab, onTabChange }) {
       {/* Brand */}
       <div className="px-5 py-5 border-b border-gray-100">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-breeze-blue flex items-center justify-center">
-            <span className="text-white font-bold text-sm">L</span>
-          </div>
+          <img src="/luca-owl-sm.png" alt="Luca" className="w-8 h-8 rounded-lg object-cover" />
           <div>
             <span className="text-lg font-semibold text-deep-navy leading-none">Luca</span>
             <p className="text-[10px] text-gray-400 leading-tight mt-0.5">Finance Command Center</p>

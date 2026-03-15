@@ -11,6 +11,18 @@ const STARTER_QUESTIONS = [
   'How is merchant setup handled?',
 ];
 
+function OwlAvatar({ size = 28, className = '' }) {
+  return (
+    <img
+      src="/luca-owl-sm.png"
+      alt="Luca"
+      width={size}
+      height={size}
+      className={`rounded-full object-cover shrink-0 ${className}`}
+    />
+  );
+}
+
 function MarkdownLink({ href, children }) {
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" className="text-breeze-blue underline hover:text-breeze-dark">
@@ -25,8 +37,8 @@ function MessageBubble({ message }) {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
       {!isUser && (
-        <div className="w-7 h-7 rounded-full bg-breeze-blue flex items-center justify-center mr-3 mt-1 shrink-0">
-          <span className="text-white text-xs font-bold">L</span>
+        <div className="mr-3 mt-1">
+          <OwlAvatar size={32} />
         </div>
       )}
       <div
@@ -50,7 +62,7 @@ function MessageBubble({ message }) {
         )}
       </div>
       {isUser && (
-        <div className="w-7 h-7 rounded-full bg-breeze-dark flex items-center justify-center ml-3 mt-1 shrink-0">
+        <div className="w-8 h-8 rounded-full bg-breeze-dark flex items-center justify-center ml-3 mt-1 shrink-0">
           <span className="text-white text-xs font-semibold">Y</span>
         </div>
       )}
@@ -61,8 +73,8 @@ function MessageBubble({ message }) {
 function TypingIndicator() {
   return (
     <div className="flex justify-start mb-4">
-      <div className="w-7 h-7 rounded-full bg-breeze-blue flex items-center justify-center mr-3 mt-1 shrink-0">
-        <span className="text-white text-xs font-bold">L</span>
+      <div className="mr-3 mt-1">
+        <OwlAvatar size={32} className="luca-thinking" />
       </div>
       <div className="bg-white border border-gray-200 rounded-xl rounded-bl-sm px-4 py-3 shadow-card">
         <div className="flex gap-1.5">
@@ -166,10 +178,12 @@ export default function ProcessManualPage() {
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center h-full">
-            <div className="w-14 h-14 rounded-2xl bg-breeze-blue flex items-center justify-center mb-5">
-              <span className="text-white text-2xl font-bold">L</span>
-            </div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-1">Luca</h2>
+            <img
+              src="/luca-owl.png"
+              alt="Luca"
+              className="w-24 h-24 mb-5"
+            />
+            <h2 className="text-xl font-semibold text-gray-800 mb-1">Hi, I'm Luca</h2>
             <p className="text-xs text-gray-400 mb-1 italic">Named after Luca Pacioli, the father of double-entry bookkeeping</p>
             <p className="text-sm text-gray-500 mb-8 text-center max-w-md">
               The Breeze finance brain. Ask about processes, playbook procedures, account codes, reconciliation, and more.
