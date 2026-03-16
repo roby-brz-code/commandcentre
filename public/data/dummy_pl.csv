@@ -1,0 +1,314 @@
+Report,Report date,Account id,Account name,Amount
+Profit and Loss,2026-02-28,5001,KYC Verification Fees,8240
+Profit and Loss,2026-02-28,5002,Unallocated Expenses,14870
+Profit and Loss,2026-02-28,5003,Bank Charges & Fees,21
+Profit and Loss,2026-02-28,5004,Legal & Professional Services,7520
+Profit and Loss,2026-02-28,5005,Office Expenses,19
+Profit and Loss,2026-02-28,5006,Contractors,69740
+Profit and Loss,2026-02-28,5007,Employee Benefits,-17890
+Profit and Loss,2026-02-28,5008,Payroll Taxes,11750
+Profit and Loss,2026-02-28,5009,Salaries & Wages,122010
+Profit and Loss,2026-02-28,5010,Software Subscriptions,19510
+Profit and Loss,2026-01-31,4001,Processing Revenue,4793100
+Profit and Loss,2026-01-31,4002,PSP Fees,1814080
+Profit and Loss,2026-01-31,5002,Unallocated Expenses,46780
+Profit and Loss,2026-01-31,5003,Bank Charges & Fees,22
+Profit and Loss,2026-01-31,5004,Legal & Professional Services,200580
+Profit and Loss,2026-01-31,5005,Office Expenses,19
+Profit and Loss,2026-01-31,5006,Contractors,35950
+Profit and Loss,2026-01-31,5007,Employee Benefits,-11530
+Profit and Loss,2026-01-31,5008,Payroll Taxes,10580
+Profit and Loss,2026-01-31,5009,Salaries & Wages,78410
+Profit and Loss,2026-01-31,5010,Software Subscriptions,37470
+Profit and Loss,2026-01-31,5011,Travel,68
+Profit and Loss,2026-01-31,5012,Uncategorized Expense,4730
+Profit and Loss,2026-01-31,6001,Dividend Income,1
+Profit and Loss,2025-12-31,4001,Processing Revenue,4516340
+Profit and Loss,2025-12-31,4003,Withdrawal Revenue,906310
+Profit and Loss,2025-12-31,4004,Payout Provider Fees,3070
+Profit and Loss,2025-12-31,4005,Bridge Fees,112030
+Profit and Loss,2025-12-31,4002,PSP Fees,1758870
+Profit and Loss,2025-12-31,4006,Custodian Fees,9470
+Profit and Loss,2025-12-31,5001,KYC Verification Fees,9760
+Profit and Loss,2025-12-31,5013,Fraud Detection Fees,14320
+Profit and Loss,2025-12-31,5014,Risk Scoring Fees,700
+Profit and Loss,2025-12-31,5015,Advertising & Marketing,51270
+Profit and Loss,2025-12-31,5003,Bank Charges & Fees,1710
+Profit and Loss,2025-12-31,5016,Chargeback Losses,37880
+Profit and Loss,2025-12-31,5017,Insurance,490
+Profit and Loss,2025-12-31,5004,Legal & Professional Services,31020
+Profit and Loss,2025-12-31,5018,Meals & Entertainment,43
+Profit and Loss,2025-12-31,5019,Entertainment,36
+Profit and Loss,2025-12-31,5020,Meals,9720
+Profit and Loss,2025-12-31,5005,Office Expenses,783
+Profit and Loss,2025-12-31,5021,Other Business Expenses,98
+Profit and Loss,2025-12-31,5022,Professional Licenses,3710
+Profit and Loss,2025-12-31,5023,Rent & Lease,1385
+Profit and Loss,2025-12-31,5024,Contractors - Intl,16090
+Profit and Loss,2025-12-31,5006,Contractors,57510
+Profit and Loss,2025-12-31,5007,Employee Benefits,3310
+Profit and Loss,2025-12-31,5025,Payroll Processing Fees,322
+Profit and Loss,2025-12-31,5008,Payroll Taxes,3810
+Profit and Loss,2025-12-31,5026,Salaries - Intl,117550
+Profit and Loss,2025-12-31,5009,Salaries & Wages,61420
+Profit and Loss,2025-12-31,5027,Shipping & Delivery,9
+Profit and Loss,2025-12-31,5010,Software Subscriptions,27230
+Profit and Loss,2025-12-31,5011,Travel,9920
+Profit and Loss,2025-12-31,6001,Dividend Income,43260
+Profit and Loss,2025-12-31,6002,Interest Earned,103
+Profit and Loss,2025-12-31,6003,Other Income,380
+Profit and Loss,2025-11-30,4001,Processing Revenue,4543230
+Profit and Loss,2025-11-30,4003,Withdrawal Revenue,724620
+Profit and Loss,2025-11-30,4005,Bridge Fees,91560
+Profit and Loss,2025-11-30,4002,PSP Fees,1770610
+Profit and Loss,2025-11-30,5001,KYC Verification Fees,8940
+Profit and Loss,2025-11-30,5013,Fraud Detection Fees,12750
+Profit and Loss,2025-11-30,5014,Risk Scoring Fees,7690
+Profit and Loss,2025-11-30,5015,Advertising & Marketing,48430
+Profit and Loss,2025-11-30,5002,Unallocated Expenses,872
+Profit and Loss,2025-11-30,5003,Bank Charges & Fees,1392
+Profit and Loss,2025-11-30,5016,Chargeback Losses,23760
+Profit and Loss,2025-11-30,5017,Insurance,723
+Profit and Loss,2025-11-30,5004,Legal & Professional Services,14980
+Profit and Loss,2025-11-30,5019,Entertainment,36
+Profit and Loss,2025-11-30,5020,Meals,9
+Profit and Loss,2025-11-30,5005,Office Expenses,68
+Profit and Loss,2025-11-30,5021,Other Business Expenses,98
+Profit and Loss,2025-11-30,5022,Professional Licenses,2247
+Profit and Loss,2025-11-30,5023,Rent & Lease,1527
+Profit and Loss,2025-11-30,5024,Contractors - Intl,16090
+Profit and Loss,2025-11-30,5006,Contractors,38240
+Profit and Loss,2025-11-30,5007,Employee Benefits,2338
+Profit and Loss,2025-11-30,5025,Payroll Processing Fees,813
+Profit and Loss,2025-11-30,5008,Payroll Taxes,3510
+Profit and Loss,2025-11-30,5026,Salaries - Intl,69400
+Profit and Loss,2025-11-30,5009,Salaries & Wages,54930
+Profit and Loss,2025-11-30,5010,Software Subscriptions,28320
+Profit and Loss,2025-11-30,5028,State Taxes,14310
+Profit and Loss,2025-11-30,5011,Travel,16150
+Profit and Loss,2025-11-30,5012,Uncategorized Expense,790
+Profit and Loss,2025-11-30,6001,Dividend Income,37260
+Profit and Loss,2025-11-30,6002,Interest Earned,29
+Profit and Loss,2025-11-30,6003,Other Income,379
+Profit and Loss,2025-10-31,4001,Processing Revenue,4461440
+Profit and Loss,2025-10-31,4003,Withdrawal Revenue,738530
+Profit and Loss,2025-10-31,4005,Bridge Fees,94880
+Profit and Loss,2025-10-31,4002,PSP Fees,1745730
+Profit and Loss,2025-10-31,5001,KYC Verification Fees,8780
+Profit and Loss,2025-10-31,5013,Fraud Detection Fees,22350
+Profit and Loss,2025-10-31,5014,Risk Scoring Fees,7410
+Profit and Loss,2025-10-31,5015,Advertising & Marketing,58520
+Profit and Loss,2025-10-31,5002,Unallocated Expenses,473
+Profit and Loss,2025-10-31,5003,Bank Charges & Fees,1230
+Profit and Loss,2025-10-31,5016,Chargeback Losses,4694
+Profit and Loss,2025-10-31,5017,Insurance,53820
+Profit and Loss,2025-10-31,5004,Legal & Professional Services,30480
+Profit and Loss,2025-10-31,5019,Entertainment,36
+Profit and Loss,2025-10-31,5020,Meals,137
+Profit and Loss,2025-10-31,5005,Office Expenses,630
+Profit and Loss,2025-10-31,5021,Other Business Expenses,98
+Profit and Loss,2025-10-31,5022,Professional Licenses,3040
+Profit and Loss,2025-10-31,5029,Referral Commissions,903
+Profit and Loss,2025-10-31,5023,Rent & Lease,1440
+Profit and Loss,2025-10-31,5024,Contractors - Intl,16090
+Profit and Loss,2025-10-31,5006,Contractors,43420
+Profit and Loss,2025-10-31,5007,Employee Benefits,2034
+Profit and Loss,2025-10-31,5025,Payroll Processing Fees,1470
+Profit and Loss,2025-10-31,5008,Payroll Taxes,5300
+Profit and Loss,2025-10-31,5026,Salaries - Intl,74080
+Profit and Loss,2025-10-31,5009,Salaries & Wages,71190
+Profit and Loss,2025-10-31,5027,Shipping & Delivery,62
+Profit and Loss,2025-10-31,5010,Software Subscriptions,49240
+Profit and Loss,2025-10-31,5028,State Taxes,177
+Profit and Loss,2025-10-31,5011,Travel,12120
+Profit and Loss,2025-10-31,6001,Dividend Income,25020
+Profit and Loss,2025-10-31,6002,Interest Earned,89
+Profit and Loss,2025-10-31,6003,Other Income,3766
+Profit and Loss,2025-09-30,4001,Processing Revenue,3375740
+Profit and Loss,2025-09-30,4003,Withdrawal Revenue,690940
+Profit and Loss,2025-09-30,4005,Bridge Fees,86790
+Profit and Loss,2025-09-30,4002,PSP Fees,1331390
+Profit and Loss,2025-09-30,5001,KYC Verification Fees,8080
+Profit and Loss,2025-09-30,5013,Fraud Detection Fees,34300
+Profit and Loss,2025-09-30,5014,Risk Scoring Fees,6120
+Profit and Loss,2025-09-30,5015,Advertising & Marketing,44760
+Profit and Loss,2025-09-30,5003,Bank Charges & Fees,5937
+Profit and Loss,2025-09-30,5016,Chargeback Losses,6840
+Profit and Loss,2025-09-30,5017,Insurance,283
+Profit and Loss,2025-09-30,5004,Legal & Professional Services,31080
+Profit and Loss,2025-09-30,5019,Entertainment,36
+Profit and Loss,2025-09-30,5005,Office Expenses,40
+Profit and Loss,2025-09-30,5021,Other Business Expenses,98
+Profit and Loss,2025-09-30,5022,Professional Licenses,1710
+Profit and Loss,2025-09-30,5023,Rent & Lease,1440
+Profit and Loss,2025-09-30,5024,Contractors - Intl,16090
+Profit and Loss,2025-09-30,5006,Contractors,42330
+Profit and Loss,2025-09-30,5007,Employee Benefits,1810
+Profit and Loss,2025-09-30,5025,Payroll Processing Fees,264
+Profit and Loss,2025-09-30,5008,Payroll Taxes,3010
+Profit and Loss,2025-09-30,5026,Salaries - Intl,99510
+Profit and Loss,2025-09-30,5009,Salaries & Wages,50410
+Profit and Loss,2025-09-30,5010,Software Subscriptions,26810
+Profit and Loss,2025-09-30,5011,Travel,7340
+Profit and Loss,2025-09-30,6001,Dividend Income,22350
+Profit and Loss,2025-09-30,6002,Interest Earned,82
+Profit and Loss,2025-09-30,6003,Other Income,185
+Profit and Loss,2025-08-31,4001,Processing Revenue,3219760
+Profit and Loss,2025-08-31,4003,Withdrawal Revenue,597210
+Profit and Loss,2025-08-31,4005,Bridge Fees,73260
+Profit and Loss,2025-08-31,4002,PSP Fees,1282080
+Profit and Loss,2025-08-31,5001,KYC Verification Fees,7280
+Profit and Loss,2025-08-31,5013,Fraud Detection Fees,7630
+Profit and Loss,2025-08-31,5014,Risk Scoring Fees,3260
+Profit and Loss,2025-08-31,5015,Advertising & Marketing,43110
+Profit and Loss,2025-08-31,5003,Bank Charges & Fees,563
+Profit and Loss,2025-08-31,5016,Chargeback Losses,12790
+Profit and Loss,2025-08-31,5017,Insurance,1290
+Profit and Loss,2025-08-31,5004,Legal & Professional Services,26180
+Profit and Loss,2025-08-31,5019,Entertainment,37
+Profit and Loss,2025-08-31,5020,Meals,9
+Profit and Loss,2025-08-31,5005,Office Expenses,480
+Profit and Loss,2025-08-31,5023,Rent & Lease,142
+Profit and Loss,2025-08-31,5024,Contractors - Intl,16090
+Profit and Loss,2025-08-31,5006,Contractors,35220
+Profit and Loss,2025-08-31,5007,Employee Benefits,1350
+Profit and Loss,2025-08-31,5025,Payroll Processing Fees,264
+Profit and Loss,2025-08-31,5008,Payroll Taxes,2820
+Profit and Loss,2025-08-31,5026,Salaries - Intl,116850
+Profit and Loss,2025-08-31,5009,Salaries & Wages,50400
+Profit and Loss,2025-08-31,5010,Software Subscriptions,16000
+Profit and Loss,2025-08-31,5011,Travel,129
+Profit and Loss,2025-08-31,6001,Dividend Income,14999
+Profit and Loss,2025-08-31,6002,Interest Earned,27
+Profit and Loss,2025-08-31,6003,Other Income,97
+Profit and Loss,2025-07-31,4001,Processing Revenue,2700110
+Profit and Loss,2025-07-31,4003,Withdrawal Revenue,436910
+Profit and Loss,2025-07-31,4005,Bridge Fees,56110
+Profit and Loss,2025-07-31,4002,PSP Fees,1026200
+Profit and Loss,2025-07-31,5015,Advertising & Marketing,1389
+Profit and Loss,2025-07-31,5003,Bank Charges & Fees,5502
+Profit and Loss,2025-07-31,5016,Chargeback Losses,3740
+Profit and Loss,2025-07-31,5017,Insurance,88
+Profit and Loss,2025-07-31,5004,Legal & Professional Services,22630
+Profit and Loss,2025-07-31,5019,Entertainment,37
+Profit and Loss,2025-07-31,5020,Meals,7
+Profit and Loss,2025-07-31,5005,Office Expenses,1306
+Profit and Loss,2025-07-31,5022,Professional Licenses,2035
+Profit and Loss,2025-07-31,5030,Recruiting Expenses,17980
+Profit and Loss,2025-07-31,5023,Rent & Lease,635
+Profit and Loss,2025-07-31,5024,Contractors - Intl,16090
+Profit and Loss,2025-07-31,5006,Contractors,46730
+Profit and Loss,2025-07-31,5007,Employee Benefits,1022
+Profit and Loss,2025-07-31,5025,Payroll Processing Fees,265
+Profit and Loss,2025-07-31,5008,Payroll Taxes,1540
+Profit and Loss,2025-07-31,5026,Salaries - Intl,81030
+Profit and Loss,2025-07-31,5009,Salaries & Wages,18850
+Profit and Loss,2025-07-31,5010,Software Subscriptions,17370
+Profit and Loss,2025-07-31,6001,Dividend Income,11067
+Profit and Loss,2025-07-31,6002,Interest Earned,52
+Profit and Loss,2025-07-31,6003,Other Income,204
+Profit and Loss,2025-06-30,4001,Processing Revenue,1681240
+Profit and Loss,2025-06-30,4003,Withdrawal Revenue,337830
+Profit and Loss,2025-06-30,4005,Bridge Fees,39820
+Profit and Loss,2025-06-30,4002,PSP Fees,627540
+Profit and Loss,2025-06-30,5015,Advertising & Marketing,103
+Profit and Loss,2025-06-30,5003,Bank Charges & Fees,531
+Profit and Loss,2025-06-30,5016,Chargeback Losses,8930
+Profit and Loss,2025-06-30,5017,Insurance,1387
+Profit and Loss,2025-06-30,5004,Legal & Professional Services,33880
+Profit and Loss,2025-06-30,5019,Entertainment,37
+Profit and Loss,2025-06-30,5005,Office Expenses,18
+Profit and Loss,2025-06-30,5030,Recruiting Expenses,5680
+Profit and Loss,2025-06-30,5023,Rent & Lease,67
+Profit and Loss,2025-06-30,5024,Contractors - Intl,16090
+Profit and Loss,2025-06-30,5006,Contractors,48920
+Profit and Loss,2025-06-30,5007,Employee Benefits,189
+Profit and Loss,2025-06-30,5025,Payroll Processing Fees,332
+Profit and Loss,2025-06-30,5008,Payroll Taxes,1370
+Profit and Loss,2025-06-30,5026,Salaries - Intl,63510
+Profit and Loss,2025-06-30,5009,Salaries & Wages,16960
+Profit and Loss,2025-06-30,5027,Shipping & Delivery,67
+Profit and Loss,2025-06-30,5010,Software Subscriptions,31920
+Profit and Loss,2025-06-30,5031,Federal Taxes,94640
+Profit and Loss,2025-06-30,5011,Travel,14
+Profit and Loss,2025-06-30,6001,Dividend Income,10010
+Profit and Loss,2025-06-30,6002,Interest Earned,0
+Profit and Loss,2025-06-30,6003,Other Income,107
+Profit and Loss,2025-05-31,4001,Processing Revenue,1694230
+Profit and Loss,2025-05-31,4003,Withdrawal Revenue,261290
+Profit and Loss,2025-05-31,4005,Bridge Fees,31690
+Profit and Loss,2025-05-31,4002,PSP Fees,640010
+Profit and Loss,2025-05-31,5003,Bank Charges & Fees,520
+Profit and Loss,2025-05-31,5016,Chargeback Losses,45880
+Profit and Loss,2025-05-31,5017,Insurance,786
+Profit and Loss,2025-05-31,5004,Legal & Professional Services,23180
+Profit and Loss,2025-05-31,5019,Entertainment,36
+Profit and Loss,2025-05-31,5020,Meals,378
+Profit and Loss,2025-05-31,5005,Office Expenses,18
+Profit and Loss,2025-05-31,5022,Professional Licenses,426
+Profit and Loss,2025-05-31,5023,Rent & Lease,67
+Profit and Loss,2025-05-31,5024,Contractors - Intl,16090
+Profit and Loss,2025-05-31,5006,Contractors,43740
+Profit and Loss,2025-05-31,5007,Employee Benefits,767
+Profit and Loss,2025-05-31,5025,Payroll Processing Fees,507
+Profit and Loss,2025-05-31,5008,Payroll Taxes,1576
+Profit and Loss,2025-05-31,5026,Salaries - Intl,54730
+Profit and Loss,2025-05-31,5009,Salaries & Wages,16960
+Profit and Loss,2025-05-31,5027,Shipping & Delivery,563
+Profit and Loss,2025-05-31,5010,Software Subscriptions,29370
+Profit and Loss,2025-05-31,5028,State Taxes,9
+Profit and Loss,2025-05-31,5011,Travel,78
+Profit and Loss,2025-05-31,6001,Dividend Income,8546
+Profit and Loss,2025-05-31,6002,Interest Earned,13
+Profit and Loss,2025-05-31,6003,Other Income,398
+Profit and Loss,2025-04-30,4001,Processing Revenue,1015230
+Profit and Loss,2025-04-30,4003,Withdrawal Revenue,209290
+Profit and Loss,2025-04-30,4005,Bridge Fees,50380
+Profit and Loss,2025-04-30,4002,PSP Fees,408730
+Profit and Loss,2025-04-30,5003,Bank Charges & Fees,697
+Profit and Loss,2025-04-30,5016,Chargeback Losses,6375
+Profit and Loss,2025-04-30,5017,Insurance,777
+Profit and Loss,2025-04-30,5004,Legal & Professional Services,20630
+Profit and Loss,2025-04-30,5019,Entertainment,36
+Profit and Loss,2025-04-30,5005,Office Expenses,18
+Profit and Loss,2025-04-30,5023,Rent & Lease,67
+Profit and Loss,2025-04-30,5024,Contractors - Intl,8284
+Profit and Loss,2025-04-30,5006,Contractors,30730
+Profit and Loss,2025-04-30,5007,Employee Benefits,355
+Profit and Loss,2025-04-30,5025,Payroll Processing Fees,143
+Profit and Loss,2025-04-30,5008,Payroll Taxes,1536
+Profit and Loss,2025-04-30,5026,Salaries - Intl,54850
+Profit and Loss,2025-04-30,5009,Salaries & Wages,16960
+Profit and Loss,2025-04-30,5027,Shipping & Delivery,96
+Profit and Loss,2025-04-30,5010,Software Subscriptions,39520
+Profit and Loss,2025-04-30,5031,Federal Taxes,260280
+Profit and Loss,2025-04-30,6001,Dividend Income,7850
+Profit and Loss,2025-04-30,6002,Interest Earned,13
+Profit and Loss,2025-04-30,6003,Other Income,125
+Profit and Loss,2025-03-31,4001,Processing Revenue,915440
+Profit and Loss,2025-03-31,4003,Withdrawal Revenue,144680
+Profit and Loss,2025-03-31,4005,Bridge Fees,27150
+Profit and Loss,2025-03-31,4002,PSP Fees,384010
+Profit and Loss,2025-03-31,5015,Advertising & Marketing,1081
+Profit and Loss,2025-03-31,5003,Bank Charges & Fees,669
+Profit and Loss,2025-03-31,5016,Chargeback Losses,852
+Profit and Loss,2025-03-31,5017,Insurance,1474
+Profit and Loss,2025-03-31,5004,Legal & Professional Services,10720
+Profit and Loss,2025-03-31,5019,Entertainment,35
+Profit and Loss,2025-03-31,5020,Meals,15
+Profit and Loss,2025-03-31,5005,Office Expenses,1854
+Profit and Loss,2025-03-31,5023,Rent & Lease,67
+Profit and Loss,2025-03-31,5024,Contractors - Intl,8284
+Profit and Loss,2025-03-31,5006,Contractors,12783
+Profit and Loss,2025-03-31,5007,Employee Benefits,-1425
+Profit and Loss,2025-03-31,5025,Payroll Processing Fees,46
+Profit and Loss,2025-03-31,5008,Payroll Taxes,1610
+Profit and Loss,2025-03-31,5026,Salaries - Intl,38900
+Profit and Loss,2025-03-31,5009,Salaries & Wages,16690
+Profit and Loss,2025-03-31,5027,Shipping & Delivery,6
+Profit and Loss,2025-03-31,5010,Software Subscriptions,11030
+Profit and Loss,2025-03-31,5028,State Taxes,1080
+Profit and Loss,2025-03-31,5011,Travel,80
+Profit and Loss,2025-03-31,6001,Dividend Income,6368
+Profit and Loss,2025-03-31,6002,Interest Earned,13
+Profit and Loss,2025-03-31,6003,Other Income,151

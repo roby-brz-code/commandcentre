@@ -4,30 +4,31 @@ import tailwindcss from '@tailwindcss/vite'
 import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 
-// GL data cache for dev server
-const devGlCache = {}
-const GL_CACHE_TTL = 5 * 60 * 1000
+const DATA_FILES = {
+  demo: {
+    transactions: 'dummy_transactions.csv',
+    pl: 'dummy_pl.csv',
+    bs: 'dummy_bs.csv',
+  },
+  live: {
+    pl: 'pl_live.csv',
+    bs: 'bs_live.csv',
+  },
+}
 
-async function fetchGLDataDev(mode) {
-  const sheetId = process.env.GL_SHEET_ID
-  if (!sheetId) return null
+function loadFinancialData(mode) {
+  const dataDir = join(process.cwd(), 'public', 'data')
+  const files = DATA_FILES[mode] || DATA_FILES.demo
+  const sections = []
 
-  const tab = mode === 'live' ? 'Actual' : 'Dummy'
-  if (devGlCache[tab] && Date.now() - devGlCache[tab].fetchedAt < GL_CACHE_TTL) {
-    return devGlCache[tab].data
+  for (const [label, filename] of Object.entries(files)) {
+    try {
+      const csv = readFileSync(join(dataDir, filename), 'utf-8')
+      sections.push({ label, csv })
+    } catch { /* skip */ }
   }
 
-  try {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`
-    const resp = await fetch(url)
-    if (!resp.ok) throw new Error(`Sheet fetch failed: ${resp.status}`)
-    const csv = await resp.text()
-    devGlCache[tab] = { data: csv, fetchedAt: Date.now() }
-    return csv
-  } catch (err) {
-    console.error('GL fetch error:', err.message)
-    return devGlCache[tab]?.data || null
-  }
+  return sections
 }
 
 function apiPlugin() {
@@ -64,25 +65,30 @@ function apiPlugin() {
             .join('\n\n---\n\n')
         } catch { /* no playbook files yet */ }
 
-        const glData = await fetchGLDataDev(mode)
+        const financialData = loadFinancialData(mode)
 
         let systemContent = `You are Luca, the Breeze Finance Operations Assistant — named after Luca Pacioli, the father of double-entry bookkeeping. You are the finance brain for Breeze, helping the team understand processes, query financial data, and run the finance function efficiently.
 
 ## Your role
-- Answer questions using the Breeze Finance Playbook AND the live General Ledger (GL) data provided below.
-- When asked about specific amounts, balances, expenses, or account details, use the GL data to give precise numbers.
+- Answer questions using the Breeze Finance Playbook AND the financial data provided below.
+- When asked about specific amounts, balances, expenses, or account details, use the financial data to give precise numbers.
 - Reference specific account numbers, journal entries, SQL tables, processes, and systems mentioned in the playbook.
 - Be concise and direct — your audience is finance professionals who need precise, actionable answers.
 - Format responses with markdown: use code blocks for journal entries and SQL, tables where helpful, bullet points for steps.
 - When presenting financial data, format currency values clearly and use tables for breakdowns.
-- If asked something outside the scope of the playbook and GL data, clearly state that it's not covered.
+- If asked something outside the scope of the playbook and financial data, clearly state that it's not covered.
 
 ## Breeze Finance Playbook
 
 ${playbook || '(No playbook files found.)'}`
 
-        if (glData) {
-          systemContent += `\n\n---\n\n## Live General Ledger Data (CSV)\n\nThe following is ${mode === 'live' ? 'real QuickBooks' : 'demo'} GL data in CSV format. Use it to answer questions about account balances, expenses, revenue, and financial details.\n\n\`\`\`csv\n${glData}\n\`\`\``
+        if (financialData.length > 0) {
+          const titles = { transactions: 'Transaction Detail', pl: 'Profit & Loss', bs: 'Balance Sheet' }
+          systemContent += '\n\n---\n\n## Financial Data\n\n'
+          systemContent += `The following is ${mode === 'live' ? 'real QuickBooks' : 'demo'} financial data. Use it to answer questions about account balances, expenses, revenue, and financial details.\n\n`
+          for (const { label, csv } of financialData) {
+            systemContent += `### ${titles[label] || label}\n\n\`\`\`csv\n${csv}\n\`\`\`\n\n`
+          }
         }
 
         res.setHeader('Content-Type', 'text/event-stream')

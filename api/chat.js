@@ -24,34 +24,34 @@ function loadPlaybookContent() {
   }
 }
 
-// GL data cache: { demo: { data, fetchedAt }, live: { data, fetchedAt } }
-const glCache = {};
-const GL_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const DATA_DIR = join(process.cwd(), 'public', 'data');
 
-async function fetchGLData(mode) {
-  const sheetId = process.env.GL_SHEET_ID;
-  if (!sheetId) return null;
+const DATA_FILES = {
+  demo: {
+    transactions: 'dummy_transactions.csv',
+    pl: 'dummy_pl.csv',
+    bs: 'dummy_bs.csv',
+  },
+  live: {
+    pl: 'pl_live.csv',
+    bs: 'bs_live.csv',
+  },
+};
 
-  const tab = mode === 'live' ? 'Actual' : 'Dummy';
-  const cacheKey = tab;
+function loadFinancialData(mode) {
+  const files = DATA_FILES[mode] || DATA_FILES.demo;
+  const sections = [];
 
-  // Return cached data if fresh
-  if (glCache[cacheKey] && Date.now() - glCache[cacheKey].fetchedAt < GL_CACHE_TTL) {
-    return glCache[cacheKey].data;
+  for (const [label, filename] of Object.entries(files)) {
+    try {
+      const csv = readFileSync(join(DATA_DIR, filename), 'utf-8');
+      sections.push({ label, csv });
+    } catch {
+      // file not found, skip
+    }
   }
 
-  try {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
-    const csv = await res.text();
-    glCache[cacheKey] = { data: csv, fetchedAt: Date.now() };
-    return csv;
-  } catch (err) {
-    console.error('GL fetch error:', err.message);
-    // Return stale cache if available
-    return glCache[cacheKey]?.data || null;
-  }
+  return sections;
 }
 
 const SYSTEM_PROMPT = `You are Luca, the Breeze Finance Operations Assistant — named after Luca Pacioli, the father of double-entry bookkeeping. You are the finance brain for Breeze, helping the team understand processes, query financial data, and run the finance function efficiently.
@@ -91,16 +91,19 @@ export default async function handler(req, res) {
   }
 
   const playbook = loadPlaybookContent();
-  const glData = await fetchGLData(mode);
+  const financialData = loadFinancialData(mode);
 
   let systemContent = SYSTEM_PROMPT;
   systemContent += '## Breeze Finance Playbook\n\n';
   systemContent += playbook || '(No playbook files found.)';
 
-  if (glData) {
-    systemContent += '\n\n---\n\n## Live General Ledger Data (CSV)\n\n';
-    systemContent += `The following is ${mode === 'live' ? 'real QuickBooks' : 'demo'} GL data in CSV format. Use it to answer questions about account balances, expenses, revenue, and financial details.\n\n`;
-    systemContent += '```csv\n' + glData + '\n```';
+  if (financialData.length > 0) {
+    systemContent += '\n\n---\n\n## Financial Data\n\n';
+    systemContent += `The following is ${mode === 'live' ? 'real QuickBooks' : 'demo'} financial data. Use it to answer questions about account balances, expenses, revenue, and financial details.\n\n`;
+    for (const { label, csv } of financialData) {
+      const titles = { transactions: 'Transaction Detail', pl: 'Profit & Loss', bs: 'Balance Sheet' };
+      systemContent += `### ${titles[label] || label}\n\n\`\`\`csv\n${csv}\n\`\`\`\n\n`;
+    }
   }
 
   res.setHeader('Content-Type', 'text/event-stream');
