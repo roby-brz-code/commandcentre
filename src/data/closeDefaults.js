@@ -7,7 +7,7 @@ export const PHASES = {
   'Other': '#64748B',
 };
 
-export const DEFAULT_ASSIGNEES = ['Luca', 'Roby', 'Bill', 'Millie', 'Peng', 'Unassigned'];
+export const DEFAULT_ASSIGNEES = ['Luca', 'Roby', 'Millie', 'Peng', 'Unassigned'];
 
 export const DEFAULT_TASKS = [
   // Revenue Recognition (Days 1-2)
