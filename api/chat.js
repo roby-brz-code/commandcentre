@@ -24,16 +24,46 @@ function loadPlaybookContent() {
   }
 }
 
+// GL data cache: { demo: { data, fetchedAt }, live: { data, fetchedAt } }
+const glCache = {};
+const GL_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+async function fetchGLData(mode) {
+  const sheetId = process.env.GL_SHEET_ID;
+  if (!sheetId) return null;
+
+  const tab = mode === 'live' ? 'Actual' : 'Dummy';
+  const cacheKey = tab;
+
+  // Return cached data if fresh
+  if (glCache[cacheKey] && Date.now() - glCache[cacheKey].fetchedAt < GL_CACHE_TTL) {
+    return glCache[cacheKey].data;
+  }
+
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Sheet fetch failed: ${res.status}`);
+    const csv = await res.text();
+    glCache[cacheKey] = { data: csv, fetchedAt: Date.now() };
+    return csv;
+  } catch (err) {
+    console.error('GL fetch error:', err.message);
+    // Return stale cache if available
+    return glCache[cacheKey]?.data || null;
+  }
+}
+
 const SYSTEM_PROMPT = `You are Luca, the Breeze Finance Operations Assistant — named after Luca Pacioli, the father of double-entry bookkeeping. You are the finance brain for Breeze, helping the team understand processes, query financial data, and run the finance function efficiently.
 
 ## Your role
-- Answer questions using ONLY the Breeze Finance Playbook content provided below.
+- Answer questions using the Breeze Finance Playbook AND the live General Ledger (GL) data provided below.
+- When asked about specific amounts, balances, expenses, or account details, use the GL data to give precise numbers.
 - Reference specific account numbers, journal entries, SQL tables, processes, and systems mentioned in the playbook.
 - Be concise and direct — your audience is finance professionals who need precise, actionable answers.
 - Format responses with markdown: use code blocks for journal entries and SQL, tables where helpful, bullet points for steps.
-- If asked something outside the scope of the playbook, clearly state that it's not covered and suggest which section might be closest.
-
-## Breeze Finance Playbook
+- When presenting financial data, format currency values clearly and use tables for breakdowns.
+- If asked something outside the scope of the playbook and GL data, clearly state that it's not covered.
 
 `;
 
@@ -49,7 +79,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { messages } = req.body;
+  const { messages, mode = 'demo' } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'messages array is required' });
@@ -61,7 +91,17 @@ export default async function handler(req, res) {
   }
 
   const playbook = loadPlaybookContent();
-  const systemContent = SYSTEM_PROMPT + (playbook || '(No playbook files found. Please add markdown files to /public/playbook/)');
+  const glData = await fetchGLData(mode);
+
+  let systemContent = SYSTEM_PROMPT;
+  systemContent += '## Breeze Finance Playbook\n\n';
+  systemContent += playbook || '(No playbook files found.)';
+
+  if (glData) {
+    systemContent += '\n\n---\n\n## Live General Ledger Data (CSV)\n\n';
+    systemContent += `The following is ${mode === 'live' ? 'real QuickBooks' : 'demo'} GL data in CSV format. Use it to answer questions about account balances, expenses, revenue, and financial details.\n\n`;
+    systemContent += '```csv\n' + glData + '\n```';
+  }
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');

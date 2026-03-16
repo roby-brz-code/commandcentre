@@ -4,6 +4,32 @@ import tailwindcss from '@tailwindcss/vite'
 import { readFileSync, readdirSync } from 'fs'
 import { join } from 'path'
 
+// GL data cache for dev server
+const devGlCache = {}
+const GL_CACHE_TTL = 5 * 60 * 1000
+
+async function fetchGLDataDev(mode) {
+  const sheetId = process.env.GL_SHEET_ID
+  if (!sheetId) return null
+
+  const tab = mode === 'live' ? 'Actual' : 'Dummy'
+  if (devGlCache[tab] && Date.now() - devGlCache[tab].fetchedAt < GL_CACHE_TTL) {
+    return devGlCache[tab].data
+  }
+
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`
+    const resp = await fetch(url)
+    if (!resp.ok) throw new Error(`Sheet fetch failed: ${resp.status}`)
+    const csv = await resp.text()
+    devGlCache[tab] = { data: csv, fetchedAt: Date.now() }
+    return csv
+  } catch (err) {
+    console.error('GL fetch error:', err.message)
+    return devGlCache[tab]?.data || null
+  }
+}
+
 function apiPlugin() {
   return {
     name: 'api-chat',
@@ -17,7 +43,7 @@ function apiPlugin() {
 
         let body = ''
         for await (const chunk of req) body += chunk
-        const { messages } = JSON.parse(body)
+        const { messages, mode = 'demo' } = JSON.parse(body)
 
         const apiKey = process.env.OPENROUTER_API_KEY
         if (!apiKey) {
@@ -38,18 +64,26 @@ function apiPlugin() {
             .join('\n\n---\n\n')
         } catch { /* no playbook files yet */ }
 
-        const systemContent = `You are Luca, the Breeze Finance Operations Assistant — named after Luca Pacioli, the father of double-entry bookkeeping. You are the finance brain for Breeze, helping the team understand processes, query financial data, and run the finance function efficiently.
+        const glData = await fetchGLDataDev(mode)
+
+        let systemContent = `You are Luca, the Breeze Finance Operations Assistant — named after Luca Pacioli, the father of double-entry bookkeeping. You are the finance brain for Breeze, helping the team understand processes, query financial data, and run the finance function efficiently.
 
 ## Your role
-- Answer questions using ONLY the Breeze Finance Playbook content provided below.
+- Answer questions using the Breeze Finance Playbook AND the live General Ledger (GL) data provided below.
+- When asked about specific amounts, balances, expenses, or account details, use the GL data to give precise numbers.
 - Reference specific account numbers, journal entries, SQL tables, processes, and systems mentioned in the playbook.
 - Be concise and direct — your audience is finance professionals who need precise, actionable answers.
 - Format responses with markdown: use code blocks for journal entries and SQL, tables where helpful, bullet points for steps.
-- If asked something outside the scope of the playbook, clearly state that it's not covered and suggest which section might be closest.
+- When presenting financial data, format currency values clearly and use tables for breakdowns.
+- If asked something outside the scope of the playbook and GL data, clearly state that it's not covered.
 
 ## Breeze Finance Playbook
 
-${playbook || '(No playbook files found. Please add markdown files to /public/playbook/)'}`
+${playbook || '(No playbook files found.)'}`
+
+        if (glData) {
+          systemContent += `\n\n---\n\n## Live General Ledger Data (CSV)\n\nThe following is ${mode === 'live' ? 'real QuickBooks' : 'demo'} GL data in CSV format. Use it to answer questions about account balances, expenses, revenue, and financial details.\n\n\`\`\`csv\n${glData}\n\`\`\``
+        }
 
         res.setHeader('Content-Type', 'text/event-stream')
         res.setHeader('Cache-Control', 'no-cache')

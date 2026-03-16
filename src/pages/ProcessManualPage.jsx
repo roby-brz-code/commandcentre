@@ -3,12 +3,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 const STARTER_QUESTIONS = [
+  'What is the breakdown of our software expenses?',
   'How do I post revenue journals?',
   "What's the chargeback accounting process?",
   'Walk me through month-end close',
   'How does CKO Clearing reconciliation work?',
   'What are the prepaid amortization steps?',
-  'How is merchant setup handled?',
 ];
 
 function OwlAvatar({ size = 28, className = '' }) {
@@ -87,7 +87,7 @@ function TypingIndicator() {
   );
 }
 
-export default function ProcessManualPage() {
+export default function ProcessManualPage({ mode = 'demo' }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +113,7 @@ export default function ProcessManualPage() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages, mode }),
       });
 
       if (!res.ok) {
