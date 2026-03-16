@@ -7,7 +7,7 @@ export const PHASES = {
   'Other': '#64748B',
 };
 
-export const ASSIGNEES = ['Roby', 'Bill', 'Millie', 'Peng', 'Unassigned'];
+export const DEFAULT_ASSIGNEES = ['Luca', 'Roby', 'Bill', 'Millie', 'Peng', 'Unassigned'];
 
 export const DEFAULT_TASKS = [
   // Revenue Recognition (Days 1-2)
@@ -46,11 +46,12 @@ export const DEFAULT_TASKS = [
   { id: 'close-5', task: 'Reconciliation sign-off', phase: 'Close the Books', dueDay: 'Day 4-5' },
 ];
 
-export const COLUMNS = ['not_started', 'in_progress', 'in_review', 'complete'];
+export const COLUMNS = ['not_started', 'in_progress', 'in_review', 'luca_prepared', 'complete'];
 
 export const COLUMN_LABELS = {
   not_started: 'Not Started',
   in_progress: 'In Progress',
   in_review: 'In Review',
+  luca_prepared: 'Luca Prepared',
   complete: 'Complete',
 };

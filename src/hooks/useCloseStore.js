@@ -1,8 +1,32 @@
 import { useState, useCallback } from 'react';
-import { DEFAULT_TASKS } from '../data/closeDefaults';
+import { DEFAULT_TASKS, DEFAULT_ASSIGNEES } from '../data/closeDefaults';
 
 function storageKey(month) {
   return `luca-close-${month}`;
+}
+
+function loadCustomAssignees() {
+  try {
+    const raw = localStorage.getItem('luca-custom-assignees');
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveCustomAssignees(list) {
+  localStorage.setItem('luca-custom-assignees', JSON.stringify(list));
+}
+
+export function getAllAssignees() {
+  const custom = loadCustomAssignees();
+  return [...DEFAULT_ASSIGNEES.filter((a) => a !== 'Unassigned'), ...custom, 'Unassigned'];
+}
+
+export function addCustomAssignee(name) {
+  const custom = loadCustomAssignees();
+  if (!custom.includes(name) && !DEFAULT_ASSIGNEES.includes(name)) {
+    custom.push(name);
+    saveCustomAssignees(custom);
+  }
 }
 
 function initMonth(month) {
@@ -31,11 +55,11 @@ export function getCloseData(month) {
   return initMonth(month);
 }
 
-export function completeTaskById(month, taskId, completedBy = 'Luca') {
+export function prepareTaskById(month, taskId, completedBy = 'Luca') {
   const data = initMonth(month);
   const task = data.tasks.find((t) => t.id === taskId);
-  if (task && task.status !== 'complete') {
-    task.status = 'complete';
+  if (task && task.status !== 'complete' && task.status !== 'luca_prepared') {
+    task.status = 'luca_prepared';
     task.completedAt = new Date().toISOString();
     task.completedBy = completedBy;
     persist(month, data);
@@ -72,11 +96,11 @@ export default function useCloseStore(initialMonth) {
 
     const task = { ...updated.tasks[idx] };
     task.status = newStatus;
-    if (newStatus === 'complete' && !task.completedAt) {
+    if ((newStatus === 'complete' || newStatus === 'luca_prepared') && !task.completedAt) {
       task.completedAt = new Date().toISOString();
       task.completedBy = task.assignee || 'Unknown';
     }
-    if (newStatus !== 'complete') {
+    if (newStatus !== 'complete' && newStatus !== 'luca_prepared') {
       task.completedAt = null;
       task.completedBy = null;
     }
@@ -88,11 +112,9 @@ export default function useCloseStore(initialMonth) {
     if (destIndex != null) {
       const colTasks = updated.tasks.filter((t) => t.status === newStatus);
       if (destIndex >= colTasks.length) {
-        // Append after last task in this column
         const lastColIdx = updated.tasks.findLastIndex((t) => t.status === newStatus);
         updated.tasks.splice(lastColIdx + 1, 0, task);
       } else {
-        // Insert before the task currently at destIndex in this column
         const targetTask = colTasks[destIndex];
         const globalIdx = updated.tasks.indexOf(targetTask);
         updated.tasks.splice(globalIdx, 0, task);

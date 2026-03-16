@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { completeTaskById, getCloseData } from '../hooks/useCloseStore';
+import { prepareTaskById } from '../hooks/useCloseStore';
 
 const STARTER_QUESTIONS = [
   'What was Payin Revenue last month?',
@@ -165,7 +165,7 @@ const CLOSE_ACTION_CHIPS = [
   { label: 'Review Balance Sheet balances', query: 'Do a Balance Sheet review — check all major account balances and flag anything unusual.' },
 ];
 
-export default function ProcessManualPage({ dataMode = 'demo' }) {
+export default function ProcessManualPage({ dataMode = 'demo', consumePreload }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -181,6 +181,13 @@ export default function ProcessManualPage({ dataMode = 'demo' }) {
     setMessages([]);
     setInput('');
   }, [dataMode]);
+
+  useEffect(() => {
+    if (consumePreload) {
+      const msg = consumePreload();
+      if (msg) sendMessage(msg);
+    }
+  }, [consumePreload]);
 
   async function sendMessage(text) {
     if (!text.trim() || isLoading) return;
@@ -241,13 +248,13 @@ export default function ProcessManualPage({ dataMode = 'demo' }) {
         setMessages([...newMessages, { ...assistantMessage }]);
       }
 
-      // Process TASK_COMPLETE tags
+      // Process TASK_COMPLETE tags — move to Luca Prepared (needs user confirmation to complete)
       const { taskIds } = parseTaskCompleteTags(assistantMessage.content);
       const month = getCurrentMonth();
       for (const taskId of taskIds) {
-        const completed = completeTaskById(month, taskId, 'Luca');
-        if (completed) {
-          setToasts((prev) => [...prev, { id: Date.now() + taskId, message: `Monthly Close updated: '${completed.task}' → Complete` }]);
+        const prepared = prepareTaskById(month, taskId, 'Luca');
+        if (prepared) {
+          setToasts((prev) => [...prev, { id: Date.now() + taskId, message: `Luca Prepared: '${prepared.task}' — review on Monthly Close board to confirm` }]);
         }
       }
     } catch (error) {

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import useCloseStore from '../hooks/useCloseStore';
-import { PHASES, ASSIGNEES, COLUMNS, COLUMN_LABELS } from '../data/closeDefaults';
+import useCloseStore, { getAllAssignees, addCustomAssignee } from '../hooks/useCloseStore';
+import { PHASES, COLUMNS, COLUMN_LABELS } from '../data/closeDefaults';
 
 function getCurrentMonth() {
   const d = new Date();
@@ -42,8 +42,23 @@ function PhaseTag({ phase }) {
   );
 }
 
-function AssigneeDropdown({ value, onChange, disabled }) {
+function AssigneeDropdown({ value, onChange, disabled, assignees, onCreateAssignee }) {
   const [open, setOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [newName, setNewName] = useState('');
+
+  function handleCreate(e) {
+    e.preventDefault();
+    const trimmed = newName.trim();
+    if (trimmed) {
+      onCreateAssignee(trimmed);
+      onChange(trimmed);
+    }
+    setNewName('');
+    setCreating(false);
+    setOpen(false);
+  }
+
   return (
     <div className="relative">
       <button
@@ -55,9 +70,9 @@ function AssigneeDropdown({ value, onChange, disabled }) {
       </button>
       {open && (
         <>
-          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute top-full left-0 mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[120px]">
-            {ASSIGNEES.map((a) => (
+          <div className="fixed inset-0 z-10" onClick={() => { setOpen(false); setCreating(false); }} />
+          <div className="absolute top-full left-0 mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[140px]">
+            {assignees.map((a) => (
               <button
                 key={a}
                 onClick={(e) => { e.stopPropagation(); onChange(a); setOpen(false); }}
@@ -66,6 +81,27 @@ function AssigneeDropdown({ value, onChange, disabled }) {
                 {a}
               </button>
             ))}
+            <div className="border-t border-gray-100 mt-1 pt-1">
+              {creating ? (
+                <form onSubmit={handleCreate} className="px-2 py-1" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    autoFocus
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Name"
+                    className="w-full px-2 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-breeze-blue/30"
+                    onKeyDown={(e) => { if (e.key === 'Escape') { setCreating(false); setNewName(''); } }}
+                  />
+                </form>
+              ) : (
+                <button
+                  onClick={(e) => { e.stopPropagation(); setCreating(true); }}
+                  className="block w-full text-left px-3 py-1.5 text-xs text-breeze-blue hover:bg-gray-50 cursor-pointer"
+                >
+                  + Add person...
+                </button>
+              )}
+            </div>
           </div>
         </>
       )}
@@ -73,8 +109,10 @@ function AssigneeDropdown({ value, onChange, disabled }) {
   );
 }
 
-function TaskCard({ task, index, locked, onAssigneeChange, faded }) {
+function TaskCard({ task, index, locked, onAssigneeChange, assignees, onCreateAssignee, onCardClick }) {
   const isComplete = task.status === 'complete';
+  const isLucaPrepared = task.status === 'luca_prepared';
+
   return (
     <Draggable draggableId={task.id} index={index} isDragDisabled={locked}>
       {(provided, snapshot) => (
@@ -82,16 +120,23 @@ function TaskCard({ task, index, locked, onAssigneeChange, faded }) {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
+          onClick={() => { if (isLucaPrepared && onCardClick) onCardClick(task); }}
           className={`bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 mb-2 transition-all ${
             snapshot.isDragging ? 'shadow-lg scale-[1.02]' : 'shadow-[0_1px_4px_rgba(0,0,0,0.04)]'
-          } ${isComplete ? 'opacity-70' : ''} ${faded ? 'opacity-40' : ''}`}
+          } ${isComplete ? 'opacity-70' : ''} ${isLucaPrepared ? 'border-breeze-blue/30 cursor-pointer hover:border-breeze-blue/60' : ''}`}
         >
           <p className={`text-sm font-medium text-[#0E1A2B] mb-2 leading-snug ${isComplete ? 'line-through text-gray-400' : ''}`}>
             {task.task}
           </p>
           <div className="flex items-center gap-2 flex-wrap">
             <PhaseTag phase={task.phase} />
-            <AssigneeDropdown value={task.assignee} onChange={onAssigneeChange} disabled={locked} />
+            <AssigneeDropdown
+              value={task.assignee}
+              onChange={onAssigneeChange}
+              disabled={locked}
+              assignees={assignees}
+              onCreateAssignee={onCreateAssignee}
+            />
             <span className="text-[10px] text-gray-400 ml-auto">{task.dueDay}</span>
           </div>
           {isComplete && task.completedAt && (
@@ -99,18 +144,29 @@ function TaskCard({ task, index, locked, onAssigneeChange, faded }) {
               Completed {formatCompletedDate(task.completedAt)} by {task.completedBy}
             </p>
           )}
+          {isLucaPrepared && task.completedAt && (
+            <div className="flex items-center gap-1 mt-2">
+              <span className="text-[10px] text-breeze-blue">Prepared {formatCompletedDate(task.completedAt)} by {task.completedBy}</span>
+              <span className="text-[10px] text-gray-400 ml-auto">Click to review</span>
+            </div>
+          )}
         </div>
       )}
     </Draggable>
   );
 }
 
-function Column({ status, tasks, locked, onAssigneeChange, filterFn }) {
+function Column({ status, tasks, locked, onAssigneeChange, assignees, onCreateAssignee, onCardClick }) {
+  const isLucaCol = status === 'luca_prepared';
   return (
-    <div className="flex-1 min-w-[240px]">
+    <div className="flex-1 min-w-[220px]">
       <div className="flex items-center gap-2 mb-3 px-1">
-        <h3 className="text-sm font-semibold text-[#0E1A2B]">{COLUMN_LABELS[status]}</h3>
-        <span className="text-[11px] font-medium bg-[#F1F5F9] text-gray-500 px-2 py-0.5 rounded-full">
+        <h3 className={`text-sm font-semibold ${isLucaCol ? 'text-breeze-blue' : 'text-[#0E1A2B]'}`}>
+          {COLUMN_LABELS[status]}
+        </h3>
+        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
+          isLucaCol ? 'bg-blue-50 text-breeze-blue' : 'bg-[#F1F5F9] text-gray-500'
+        }`}>
           {tasks.length}
         </span>
       </div>
@@ -120,7 +176,7 @@ function Column({ status, tasks, locked, onAssigneeChange, filterFn }) {
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={`min-h-[200px] rounded-xl p-2 transition-colors ${
-              snapshot.isDraggingOver ? 'bg-blue-50/50' : 'bg-[#F8FAFC]'
+              snapshot.isDraggingOver ? 'bg-blue-50/50' : isLucaCol ? 'bg-blue-50/30' : 'bg-[#F8FAFC]'
             }`}
           >
             {tasks.map((task, i) => (
@@ -130,7 +186,9 @@ function Column({ status, tasks, locked, onAssigneeChange, filterFn }) {
                 index={i}
                 locked={locked}
                 onAssigneeChange={(a) => onAssigneeChange(task.id, a)}
-                faded={filterFn && !filterFn(task)}
+                assignees={assignees}
+                onCreateAssignee={onCreateAssignee}
+                onCardClick={onCardClick}
               />
             ))}
             {provided.placeholder}
@@ -141,7 +199,7 @@ function Column({ status, tasks, locked, onAssigneeChange, filterFn }) {
   );
 }
 
-function AddTaskModal({ onAdd, onClose }) {
+function AddTaskModal({ onAdd, onClose, assignees, onCreateAssignee }) {
   const [name, setName] = useState('');
   const [phase, setPhase] = useState('Other');
   const [assignee, setAssignee] = useState('Unassigned');
@@ -184,7 +242,7 @@ function AddTaskModal({ onAdd, onClose }) {
               onChange={(e) => setAssignee(e.target.value)}
               className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-breeze-blue/20 bg-white"
             >
-              {ASSIGNEES.map((a) => <option key={a} value={a}>{a}</option>)}
+              {assignees.map((a) => <option key={a} value={a}>{a}</option>)}
             </select>
           </div>
           <div className="flex justify-end gap-2 pt-2">
@@ -197,7 +255,7 @@ function AddTaskModal({ onAdd, onClose }) {
   );
 }
 
-export default function MonthlyClosePage() {
+export default function MonthlyClosePage({ onNavigateToChat }) {
   const currentMonth = getCurrentMonth();
   const recentMonths = useMemo(getRecentMonths, []);
   const store = useCloseStore(currentMonth);
@@ -206,10 +264,24 @@ export default function MonthlyClosePage() {
   const [filterAssignee, setFilterAssignee] = useState(null);
   const [filterPhase, setFilterPhase] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [assignees, setAssignees] = useState(getAllAssignees);
+
+  function handleCreateAssignee(name) {
+    addCustomAssignee(name);
+    setAssignees(getAllAssignees());
+  }
+
+  function handleCardClick(task) {
+    if (onNavigateToChat) {
+      onNavigateToChat(task);
+    }
+  }
 
   const tasks = data.tasks;
   const totalTasks = tasks.length;
   const completeTasks = tasks.filter((t) => t.status === 'complete').length;
+  const lucaPreparedTasks = tasks.filter((t) => t.status === 'luca_prepared').length;
+  const doneOrPrepared = completeTasks + lucaPreparedTasks;
   const pct = totalTasks > 0 ? Math.round((completeTasks / totalTasks) * 100) : 0;
 
   const columnCounts = {};
@@ -217,14 +289,15 @@ export default function MonthlyClosePage() {
     columnCounts[col] = tasks.filter((t) => t.status === col).length;
   }
 
-  const filterFn = (filterAssignee || filterPhase)
-    ? (t) => {
-        if (filterAssignee && t.assignee !== filterAssignee) return false;
-        if (filterPhase && t.phase !== filterPhase) return false;
-        return true;
-      }
-    : null;
+  // Build filtered task lists per column — actually hide non-matching cards
+  const hasFilter = filterAssignee || filterPhase;
+  function filterTask(t) {
+    if (filterAssignee && t.assignee !== filterAssignee) return false;
+    if (filterPhase && t.phase !== filterPhase) return false;
+    return true;
+  }
 
+  const filteredAssignees = [...new Set(tasks.map((t) => t.assignee))].filter((a) => a !== 'Unassigned');
   const activePhases = [...new Set(tasks.map((t) => t.phase))];
 
   function onDragEnd(result) {
@@ -304,13 +377,19 @@ export default function MonthlyClosePage() {
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-sm font-medium text-gray-700">
               {completeTasks} of {totalTasks} tasks complete — {pct}%
+              {lucaPreparedTasks > 0 && (
+                <span className="text-breeze-blue font-normal ml-2">({lucaPreparedTasks} prepared by Luca)</span>
+              )}
             </span>
             <span className="text-[11px] text-gray-400">
-              Not Started: {columnCounts.not_started} &middot; In Progress: {columnCounts.in_progress} &middot; In Review: {columnCounts.in_review} &middot; Complete: {columnCounts.complete}
+              {COLUMNS.map((col) => `${COLUMN_LABELS[col]}: ${columnCounts[col]}`).join(' \u00B7 ')}
             </span>
           </div>
-          <div className="w-full h-2 bg-[#F1F5F9] rounded-full overflow-hidden">
-            <div className="h-full bg-breeze-blue rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+          <div className="w-full h-2 bg-[#F1F5F9] rounded-full overflow-hidden flex">
+            <div className="h-full bg-breeze-blue rounded-l-full transition-all duration-500" style={{ width: `${pct}%` }} />
+            {lucaPreparedTasks > 0 && (
+              <div className="h-full bg-breeze-blue/30 transition-all duration-500" style={{ width: `${Math.round((lucaPreparedTasks / totalTasks) * 100)}%` }} />
+            )}
           </div>
         </div>
 
@@ -318,12 +397,20 @@ export default function MonthlyClosePage() {
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-1.5">
             <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mr-1">Assignee</span>
-            {['All', ...ASSIGNEES.filter((a) => a !== 'Unassigned')].map((a) => (
+            <button
+              onClick={() => setFilterAssignee(null)}
+              className={`px-2.5 py-1 text-[11px] font-medium rounded-full transition-colors cursor-pointer ${
+                !filterAssignee ? 'bg-breeze-blue text-white' : 'bg-[#F1F5F9] text-gray-500 hover:bg-gray-200'
+              }`}
+            >
+              All
+            </button>
+            {filteredAssignees.map((a) => (
               <button
                 key={a}
-                onClick={() => setFilterAssignee(a === 'All' ? null : a)}
+                onClick={() => setFilterAssignee(filterAssignee === a ? null : a)}
                 className={`px-2.5 py-1 text-[11px] font-medium rounded-full transition-colors cursor-pointer ${
-                  (a === 'All' && !filterAssignee) || filterAssignee === a
+                  filterAssignee === a
                     ? 'bg-breeze-blue text-white'
                     : 'bg-[#F1F5F9] text-gray-500 hover:bg-gray-200'
                 }`}
@@ -367,16 +454,22 @@ export default function MonthlyClosePage() {
       <div className="flex-1 overflow-x-auto overflow-y-auto px-6 py-4">
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="flex gap-4 min-h-full">
-            {COLUMNS.map((col) => (
-              <Column
-                key={col}
-                status={col}
-                tasks={tasks.filter((t) => t.status === col)}
-                locked={data.locked}
-                onAssigneeChange={setAssignee}
-                filterFn={filterFn}
-              />
-            ))}
+            {COLUMNS.map((col) => {
+              const colTasks = tasks.filter((t) => t.status === col);
+              const visibleTasks = hasFilter ? colTasks.filter(filterTask) : colTasks;
+              return (
+                <Column
+                  key={col}
+                  status={col}
+                  tasks={visibleTasks}
+                  locked={data.locked}
+                  onAssigneeChange={setAssignee}
+                  assignees={assignees}
+                  onCreateAssignee={handleCreateAssignee}
+                  onCardClick={handleCardClick}
+                />
+              );
+            })}
           </div>
         </DragDropContext>
       </div>
@@ -385,6 +478,8 @@ export default function MonthlyClosePage() {
         <AddTaskModal
           onAdd={addTask}
           onClose={() => setShowAddModal(false)}
+          assignees={assignees}
+          onCreateAssignee={handleCreateAssignee}
         />
       )}
     </div>

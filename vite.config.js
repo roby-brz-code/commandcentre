@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { readFileSync, readdirSync, existsSync } from 'fs'
 import { join } from 'path'
 
-const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|detail|vendor|what's in|composition|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i
+const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|detail|vendor|what's in|composition|reconcil|transaction|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i
 
 function detectModel(messages) {
   const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')
@@ -26,9 +26,9 @@ function loadCSV(filename) {
 
 function loadFinancialData(mode) {
   if (mode === 'live') {
-    return { pl: loadCSV('pl_live.csv'), bs: loadCSV('bs_live.csv'), plDetail: loadCSV('pl_live_detail.csv') }
+    return { pl: loadCSV('pl_live.csv'), bs: loadCSV('bs_live.csv'), plDetail: loadCSV('pl_live_detail.csv'), transactions: loadCSV('dummy_transactions.csv') }
   }
-  return { pl: loadCSV('dummy_pl.csv'), bs: loadCSV('dummy_bs.csv'), plDetail: loadCSV('dummy_pl_detail.csv') }
+  return { pl: loadCSV('dummy_pl.csv'), bs: loadCSV('dummy_bs.csv'), plDetail: loadCSV('dummy_pl_detail.csv'), transactions: loadCSV('dummy_transactions.csv') }
 }
 
 function apiPlugin() {
@@ -65,7 +65,7 @@ function apiPlugin() {
             .join('\n\n---\n\n')
         } catch { /* no playbook files yet */ }
 
-        const { pl: plData, bs: bsData, plDetail: plDetailData } = loadFinancialData(mode === 'live' ? 'live' : 'demo')
+        const { pl: plData, bs: bsData, plDetail: plDetailData, transactions: txnData } = loadFinancialData(mode === 'live' ? 'live' : 'demo')
 
         let systemContent = `You are Luca, the Breeze Finance Operations Assistant — named after Luca Pacioli, the father of double-entry bookkeeping. You are the finance brain for Breeze, helping the team understand processes, query financial data, and run the finance function efficiently.
 
@@ -104,6 +104,8 @@ You can perform certain finance tasks directly by analyzing the financial data y
 
 [TASK_COMPLETE: task_id]
 
+This moves the task to the "Luca Prepared" column on the Monthly Close board. The user must then review your work and confirm before it moves to Complete. So be thorough in your analysis — the user will be checking your work.
+
 The available task IDs and what triggers them:
 - cash-6: When you check the CKO Clearing / PSP Clearing balance
 - close-1: When you do a P&L review or summary
@@ -122,6 +124,7 @@ ${playbook || '(No playbook files found.)'}`
         if (plData || bsData) {
           if (plData) systemContent += `\n\n---\n\n## Profit & Loss Data (from QuickBooks via Coupler.io)\n\nMonthly totals per account in CSV format (Report, Report date, Account id, Account name, Amount).\n\n${plData}`
           if (plDetailData) systemContent += `\n\n---\n\n## P&L Transaction Detail (vendor-level breakdowns)\n\nLine-item detail for major P&L accounts, showing vendor/description breakdowns per month. When a user asks what's inside an expense or revenue category, use this data to show the composition. CSV format: Report date, Account id, Account name, Vendor/Description, Amount.\n\n${plDetailData}`
+          if (txnData) systemContent += `\n\n---\n\n## Transaction Detail (individual transactions)\n\nIndividual transaction records with vendor, memo, and amount. CSV format: Date, Account id, Account name, Vendor/Payee, Memo, Amount, Type. Use this for detailed reconciliation and transaction-level analysis.\n\n${txnData}`
           if (bsData) systemContent += `\n\n---\n\n## Balance Sheet Data (from QuickBooks via Coupler.io)\n\nMonthly snapshots in CSV format (account names as rows, months as columns).\n\n${bsData}`
         } else {
           systemContent += `\n\n---\n\n## Financial Data\n\nP&L and Balance Sheet data files are not available. You can only answer process/playbook questions.`

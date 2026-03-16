@@ -35,7 +35,7 @@ function loadCSV(filename) {
   }
 }
 
-const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|detail|vendor|what's in|composition|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i;
+const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|detail|vendor|what's in|composition|reconcil|transaction|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i;
 
 function detectModel(messages) {
   const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user');
@@ -51,12 +51,14 @@ function loadFinancialData(mode) {
       pl: loadCSV('pl_live.csv'),
       bs: loadCSV('bs_live.csv'),
       plDetail: loadCSV('pl_live_detail.csv'),
+      transactions: loadCSV('dummy_transactions.csv'),
     };
   }
   return {
     pl: loadCSV('dummy_pl.csv'),
     bs: loadCSV('dummy_bs.csv'),
     plDetail: loadCSV('dummy_pl_detail.csv'),
+    transactions: loadCSV('dummy_transactions.csv'),
   };
 }
 
@@ -96,6 +98,8 @@ Format suggested follow-up questions as a bulleted list at the end of your respo
 You can perform certain finance tasks directly by analyzing the financial data you have access to. When you complete a task that matches a Monthly Close checklist item, include a special tag at the very end of your response (after the "Want to dig deeper?" section if present) in this exact format:
 
 [TASK_COMPLETE: task_id]
+
+This moves the task to the "Luca Prepared" column on the Monthly Close board. The user must then review your work and confirm before it moves to Complete. So be thorough in your analysis — the user will be checking your work.
 
 The available task IDs and what triggers them:
 - cash-6: When you check the CKO Clearing / PSP Clearing balance
@@ -201,13 +205,14 @@ export default async function handler(req, res) {
   }
 
   const playbook = loadPlaybookContent();
-  const { pl, bs, plDetail } = loadFinancialData(mode === 'live' ? 'live' : 'demo');
+  const { pl, bs, plDetail, transactions } = loadFinancialData(mode === 'live' ? 'live' : 'demo');
 
   let systemContent = SYSTEM_PROMPT + (playbook || '(No playbook files found.)');
 
   if (pl || bs) {
     if (pl) systemContent += PL_PROMPT + pl;
     if (plDetail) systemContent += PL_DETAIL_PROMPT + plDetail;
+    if (transactions) systemContent += '\n\n---\n\n## Transaction Detail (individual transactions)\n\nIndividual transaction records with vendor, memo, and amount. CSV format: Date, Account id, Account name, Vendor/Payee, Memo, Amount, Type. Use this for detailed reconciliation and transaction-level analysis.\n\n' + transactions;
     if (bs) systemContent += BS_PROMPT + bs;
   } else {
     systemContent += FIN_UNAVAILABLE;
