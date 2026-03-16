@@ -82,13 +82,13 @@ export default function Sidebar({ activeTab, onTabChange, dataMode, onDataModeCh
     <aside className="w-60 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
       {/* Brand */}
       <div className="px-5 py-5 border-b border-gray-100">
-        <div className="flex items-center gap-2.5">
+        <button onClick={() => onTabChange('chat')} className="flex items-center gap-2.5 cursor-pointer">
           <img src="/luca-owl-sm.png" alt="Luca" className="w-8 h-8 rounded-lg object-cover" />
           <div>
             <span className="text-lg font-semibold text-deep-navy leading-none">Luca</span>
             <p className="text-[10px] text-gray-400 leading-tight mt-0.5">Finance Command Center</p>
           </div>
-        </div>
+        </button>
       </div>
 
       <nav className="flex-1 px-3 py-4 overflow-y-auto">
