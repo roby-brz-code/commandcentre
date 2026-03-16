@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { completeTaskById, getCloseData } from '../hooks/useCloseStore';
 
 const STARTER_QUESTIONS = [
   'What was Payin Revenue last month?',
@@ -10,6 +11,15 @@ const STARTER_QUESTIONS = [
   'Show me a P&L summary for January 2026',
   "What's our net income trend?",
 ];
+
+function parseTaskCompleteTags(content) {
+  const tags = [];
+  const cleaned = content.replace(/\[TASK_COMPLETE:\s*([^\]]+)\]/g, (_, id) => {
+    tags.push(id.trim());
+    return '';
+  });
+  return { content: cleaned.trimEnd(), taskIds: tags };
+}
 
 function parseFollowUps(content) {
   const pattern = /\n+\*{0,2}Want to dig deeper\??\*{0,2}\s*\n([\s\S]*?)$/i;
@@ -23,12 +33,30 @@ function parseFollowUps(content) {
   let m;
   while ((m = bulletPattern.exec(listSection)) !== null) {
     let text = m[1].trim();
-    // Strip trailing question mark duplicates and surrounding quotes
     text = text.replace(/^['""']+|['""']+$/g, '').trim();
     if (text) followUps.push(text);
   }
 
   return { body, followUps };
+}
+
+function getCurrentMonth() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function Toast({ message, onDone }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 4000);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  return (
+    <div className="flex items-center gap-2 px-4 py-3 bg-white border border-green-200 rounded-xl shadow-lg text-sm text-gray-700 animate-slide-up">
+      <span className="text-green-500 text-base">&#10003;</span>
+      <span>{message}</span>
+    </div>
+  );
 }
 
 function QuestionChip({ text, onClick }) {
@@ -64,9 +92,10 @@ function MarkdownLink({ href, children }) {
 
 function MessageBubble({ message, onFollowUp }) {
   const isUser = message.role === 'user';
+  const stripped = isUser ? message.content : parseTaskCompleteTags(message.content).content;
   const { body, followUps } = isUser
-    ? { body: message.content, followUps: [] }
-    : parseFollowUps(message.content);
+    ? { body: stripped, followUps: [] }
+    : parseFollowUps(stripped);
 
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-5`}>
@@ -130,10 +159,17 @@ function TypingIndicator() {
   );
 }
 
+const CLOSE_ACTION_CHIPS = [
+  { label: 'Run CKO Clearing balance check', query: "What's the current CKO Clearing / PSP Clearing balance? Check if it looks correct." },
+  { label: 'Generate P&L variance analysis', query: 'Run a variance analysis comparing this month to last month on the P&L.' },
+  { label: 'Review Balance Sheet balances', query: 'Do a Balance Sheet review — check all major account balances and flag anything unusual.' },
+];
+
 export default function ProcessManualPage({ dataMode = 'demo' }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [toasts, setToasts] = useState([]);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -204,6 +240,16 @@ export default function ProcessManualPage({ dataMode = 'demo' }) {
         assistantMessage.content = 'Sorry, I didn\'t receive a response. Please try again.';
         setMessages([...newMessages, { ...assistantMessage }]);
       }
+
+      // Process TASK_COMPLETE tags
+      const { taskIds } = parseTaskCompleteTags(assistantMessage.content);
+      const month = getCurrentMonth();
+      for (const taskId of taskIds) {
+        const completed = completeTaskById(month, taskId, 'Luca');
+        if (completed) {
+          setToasts((prev) => [...prev, { id: Date.now() + taskId, message: `Monthly Close updated: '${completed.task}' → Complete` }]);
+        }
+      }
     } catch (error) {
       assistantMessage.content = `Error: ${error.message}. Please check that the API key is configured in Vercel.`;
       setMessages([...newMessages, { ...assistantMessage }]);
@@ -235,10 +281,18 @@ export default function ProcessManualPage({ dataMode = 'demo' }) {
             <p className="text-sm text-gray-500 mb-8 text-center max-w-md">
               Ask about P&L, balance sheet, playbook processes, account balances, and more.
             </p>
-            <div className="flex flex-wrap justify-center gap-3 max-w-2xl">
+            <div className="flex flex-wrap justify-center gap-3 max-w-2xl mb-6">
               {STARTER_QUESTIONS.map((q) => (
                 <QuestionChip key={q} text={q} onClick={() => sendMessage(q)} />
               ))}
+            </div>
+            <div className="border-t border-gray-100 pt-5">
+              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-3 text-center">Monthly Close Actions</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {CLOSE_ACTION_CHIPS.map((a) => (
+                  <QuestionChip key={a.label} text={a.label} onClick={() => sendMessage(a.query)} />
+                ))}
+              </div>
             </div>
           </div>
         ) : (
@@ -287,6 +341,15 @@ export default function ProcessManualPage({ dataMode = 'demo' }) {
           Luca answers from the Breeze Finance Playbook, P&L, and Balance Sheet. Responses may need verification.
         </p>
       </div>
+
+      {/* Toast notifications */}
+      {toasts.length > 0 && (
+        <div className="fixed bottom-24 right-6 z-50 flex flex-col gap-2">
+          {toasts.map((t) => (
+            <Toast key={t.id} message={t.message} onDone={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

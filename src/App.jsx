@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Layout from './components/layout/Layout';
 import ProcessManualPage from './pages/ProcessManualPage';
+import MonthlyClosePage from './pages/MonthlyClosePage';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('chat');
@@ -14,7 +15,11 @@ export default function App() {
 
   return (
     <Layout activeTab={activeTab} onTabChange={setActiveTab} dataMode={dataMode} onDataModeChange={setDataMode}>
-      <ProcessManualPage dataMode={dataMode} />
+      {activeTab === 'close' ? (
+        <MonthlyClosePage />
+      ) : (
+        <ProcessManualPage dataMode={dataMode} />
+      )}
     </Layout>
   );
 }

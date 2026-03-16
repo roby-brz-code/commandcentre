@@ -25,6 +25,15 @@ body {
   animation: luca-thinking 1.2s ease-in-out infinite;
 }
 
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
 /* ── Luca chat markdown styles ── */
 .luca-markdown {
   font-size: 0.875rem;
