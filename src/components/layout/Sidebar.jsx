@@ -65,7 +65,6 @@ function ExternalLinkIcon({ className }) {
 const comingSoonItems = [
   { label: 'Reconciliation Checks', icon: CheckCircleIcon },
   { label: 'Variance Analysis', icon: ScaleIcon },
-  { label: 'Cash Dashboard', icon: CashIcon },
   { label: 'Tax Calendar', icon: CalendarIcon },
 ];
 
@@ -115,6 +114,17 @@ export default function Sidebar({ activeTab, onTabChange, dataMode, onDataModeCh
         >
           <ClipboardIcon className="w-5 h-5 shrink-0" />
           Monthly Close
+        </button>
+        <button
+          onClick={() => onTabChange('cash')}
+          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer mb-1 ${
+            activeTab === 'cash'
+              ? 'bg-blue-50 text-breeze-blue'
+              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+          }`}
+        >
+          <CashIcon className="w-5 h-5 shrink-0" />
+          Cash Dashboard
         </button>
 
         {/* COMING SOON section */}
