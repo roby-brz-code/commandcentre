@@ -1,0 +1,98 @@
+Date,Account id,Account name,Vendor/Payee,Memo,Amount,Type
+2026-01-03,5010,Software Subscriptions,Sigma Computing,Annual BI platform - Jan allocation,3200.00,Bill
+2026-01-03,5010,Software Subscriptions,Coupler.io,Data integration - monthly,890.00,Bill
+2026-01-03,5010,Software Subscriptions,TaxJar,Sales tax automation - monthly,1540.00,Bill
+2026-01-05,5010,Software Subscriptions,Slack,Business+ plan - monthly,2180.00,Bill
+2026-01-05,5010,Software Subscriptions,Notion,Team plan - monthly,640.00,Bill
+2026-01-05,5010,Software Subscriptions,Google Workspace,Business Standard - monthly,1920.00,Bill
+2026-01-07,5010,Software Subscriptions,AWS,Cloud hosting - January,8430.00,Bill
+2026-01-07,5010,Software Subscriptions,Vercel,Pro plan - monthly,420.00,Bill
+2026-01-08,5010,Software Subscriptions,1Password,Business plan - monthly,285.00,Bill
+2026-01-08,5010,Software Subscriptions,Datadog,Infrastructure monitoring - monthly,3150.00,Bill
+2026-01-10,5010,Software Subscriptions,Linear,Project management - monthly,340.00,Bill
+2026-01-12,5010,Software Subscriptions,Figma,Design tool - monthly,450.00,Bill
+2026-01-15,5010,Software Subscriptions,GitHub,Team plan - monthly,525.00,Bill
+2026-01-18,5010,Software Subscriptions,Sentry,Error monitoring - monthly,290.00,Bill
+2026-01-20,5010,Software Subscriptions,Zendesk,Support platform - monthly,780.00,Bill
+2026-01-22,5010,Software Subscriptions,DocuSign,Business plan - monthly,320.00,Bill
+2026-01-25,5010,Software Subscriptions,Vanta,SOC 2 compliance - monthly,2100.00,Bill
+2026-01-28,5010,Software Subscriptions,Ramp,Expense management platform,240.00,Bill
+2026-01-28,5010,Software Subscriptions,Stripe Atlas,Registered agent fee,100.00,Bill
+2026-01-31,5010,Software Subscriptions,Other misc,Various small subscriptions,9700.00,Journal Entry
+2026-02-03,5010,Software Subscriptions,Sigma Computing,Annual BI platform - Feb allocation,3200.00,Bill
+2026-02-03,5010,Software Subscriptions,Coupler.io,Data integration - monthly,890.00,Bill
+2026-02-03,5010,Software Subscriptions,TaxJar,Sales tax automation - monthly,1540.00,Bill
+2026-02-05,5010,Software Subscriptions,Slack,Business+ plan - monthly,2180.00,Bill
+2026-02-05,5010,Software Subscriptions,Notion,Team plan - monthly,640.00,Bill
+2026-02-05,5010,Software Subscriptions,Google Workspace,Business Standard - monthly,1920.00,Bill
+2026-02-07,5010,Software Subscriptions,AWS,Cloud hosting - February,7920.00,Bill
+2026-02-07,5010,Software Subscriptions,Vercel,Pro plan - monthly,420.00,Bill
+2026-02-08,5010,Software Subscriptions,1Password,Business plan - monthly,285.00,Bill
+2026-02-08,5010,Software Subscriptions,Datadog,Infrastructure monitoring - monthly,3150.00,Bill
+2026-02-10,5010,Software Subscriptions,Linear,Project management - monthly,340.00,Bill
+2026-02-12,5010,Software Subscriptions,Figma,Design tool - monthly,450.00,Bill
+2026-02-15,5010,Software Subscriptions,GitHub,Team plan - monthly,525.00,Bill
+2026-02-18,5010,Software Subscriptions,Sentry,Error monitoring - monthly,290.00,Bill
+2026-02-20,5010,Software Subscriptions,Zendesk,Support platform - monthly,780.00,Bill
+2026-02-22,5010,Software Subscriptions,DocuSign,Business plan - monthly,320.00,Bill
+2026-02-25,5010,Software Subscriptions,Vanta,SOC 2 compliance - monthly,2100.00,Bill
+2026-02-28,5010,Software Subscriptions,Ramp,Expense management platform,240.00,Bill
+2026-02-28,5010,Software Subscriptions,Stripe Atlas,Registered agent fee,100.00,Bill
+2026-02-28,5010,Software Subscriptions,HubSpot,CRM - monthly,1420.00,Bill
+2026-02-28,5010,Software Subscriptions,Other misc,Various small subscriptions,9490.00,Journal Entry
+2026-01-03,5006,Contractors,TechBridge Solutions,Backend development - Jan 1-15,18400.00,Bill
+2026-01-17,5006,Contractors,TechBridge Solutions,Backend development - Jan 16-31,18400.00,Bill
+2026-01-05,5006,Contractors,DataFlow Analytics,Data engineering support - January,8800.00,Bill
+2026-01-10,5006,Contractors,NexaPay Consulting,Payment integration consulting,12200.00,Bill
+2026-01-15,5006,Contractors,SecureNet LLC,Security audit - Phase 2,6400.00,Bill
+2026-01-22,5006,Contractors,PixelCraft Design,UI/UX design - merchant portal,4200.00,Bill
+2026-01-28,5006,Contractors,Various,Misc contractor payments,15800.00,Bill
+2026-02-03,5006,Contractors,TechBridge Solutions,Backend development - Feb 1-15,18400.00,Bill
+2026-02-17,5006,Contractors,TechBridge Solutions,Backend development - Feb 16-28,18400.00,Bill
+2026-02-05,5006,Contractors,DataFlow Analytics,Data engineering support - February,8800.00,Bill
+2026-02-10,5006,Contractors,NexaPay Consulting,API gateway migration,15200.00,Bill
+2026-02-15,5006,Contractors,CloudArch Partners,Infrastructure optimization,12400.00,Bill
+2026-02-22,5006,Contractors,PixelCraft Design,UI/UX - dashboard redesign,8200.00,Bill
+2026-02-28,5006,Contractors,Various,Misc contractor payments,8000.00,Bill
+2026-01-04,5004,Legal & Professional Services,Morrison & Associates LLP,Corporate legal - monthly retainer,8500.00,Bill
+2026-01-10,5004,Legal & Professional Services,Grant Thornton Advisory,Tax advisory - Q4 review,6200.00,Bill
+2026-01-20,5004,Legal & Professional Services,ComplianceFirst LLC,AML program review,4200.00,Bill
+2026-01-28,5004,Legal & Professional Services,StateReg Partners,State license renewals,3200.00,Bill
+2026-02-04,5004,Legal & Professional Services,Morrison & Associates LLP,Corporate legal - monthly retainer,8500.00,Bill
+2026-02-12,5004,Legal & Professional Services,StateReg Partners,MTL applications - 3 states,6400.00,Bill
+2026-02-20,5004,Legal & Professional Services,ComplianceFirst LLC,Quarterly compliance review,4800.00,Bill
+2026-02-28,5004,Legal & Professional Services,Morrison & Associates LLP,IP licensing review,4900.00,Bill
+2026-01-15,5009,Salaries & Wages,Payroll,Semi-monthly payroll - Jan 1-15,170800.00,Payroll
+2026-01-31,5009,Salaries & Wages,Payroll,Semi-monthly payroll - Jan 16-31,177200.00,Payroll
+2026-02-15,5009,Salaries & Wages,Payroll,Semi-monthly payroll - Feb 1-15,178400.00,Payroll
+2026-02-28,5009,Salaries & Wages,Payroll,Semi-monthly payroll - Feb 16-28,183600.00,Payroll
+2026-01-15,5008,Payroll Taxes,Payroll,Payroll taxes - Jan 1-15,13200.00,Payroll
+2026-01-31,5008,Payroll Taxes,Payroll,Payroll taxes - Jan 16-31,13700.00,Payroll
+2026-02-15,5008,Payroll Taxes,Payroll,Payroll taxes - Feb 1-15,13800.00,Payroll
+2026-02-28,5008,Payroll Taxes,Payroll,Payroll taxes - Feb 16-28,14300.00,Payroll
+2026-01-03,4001,Processing Revenue,Various merchants,Week 1 - processing fees,2840200.00,Journal Entry
+2026-01-10,4001,Processing Revenue,Various merchants,Week 2 - processing fees,2960100.00,Journal Entry
+2026-01-17,4001,Processing Revenue,Various merchants,Week 3 - processing fees,2920400.00,Journal Entry
+2026-01-24,4001,Processing Revenue,Various merchants,Week 4 - processing fees,3099700.00,Journal Entry
+2026-02-03,4001,Processing Revenue,Various merchants,Week 1 - processing fees,3020400.00,Journal Entry
+2026-02-10,4001,Processing Revenue,Various merchants,Week 2 - processing fees,3148200.00,Journal Entry
+2026-02-17,4001,Processing Revenue,Various merchants,Week 3 - processing fees,3102600.00,Journal Entry
+2026-02-24,4001,Processing Revenue,Various merchants,Week 4 - processing fees,3179600.00,Journal Entry
+2026-01-03,4002,Processing Costs,Payment Processor,Week 1 - processing costs,1079200.00,Journal Entry
+2026-01-10,4002,Processing Costs,Payment Processor,Week 2 - processing costs,1124800.00,Journal Entry
+2026-01-17,4002,Processing Costs,Payment Processor,Week 3 - processing costs,1109800.00,Journal Entry
+2026-01-24,4002,Processing Costs,Payment Processor,Week 4 - processing costs,1177950.00,Journal Entry
+2026-02-03,4002,Processing Costs,Payment Processor,Week 1 - processing costs,1147800.00,Journal Entry
+2026-02-10,4002,Processing Costs,Payment Processor,Week 2 - processing costs,1196300.00,Journal Entry
+2026-02-17,4002,Processing Costs,Payment Processor,Week 3 - processing costs,1179000.00,Journal Entry
+2026-02-24,4002,Processing Costs,Payment Processor,Week 4 - processing costs,1208200.00,Journal Entry
+2026-01-05,5017,Insurance,SafeGuard Insurance,D&O insurance - monthly,1900.00,Bill
+2026-02-05,5017,Insurance,SafeGuard Insurance,D&O insurance - monthly,2100.00,Bill
+2026-01-03,5003,Bank Charges & Fees,Primary Bank,Wire transfer fees,32.00,Bank Fee
+2026-01-15,5003,Bank Charges & Fees,Settlement Bank,International wire fee,23.00,Bank Fee
+2026-02-03,5003,Bank Charges & Fees,Primary Bank,Wire transfer fees,38.00,Bank Fee
+2026-02-18,5003,Bank Charges & Fees,Settlement Bank,International wire fee,24.00,Bank Fee
+2026-01-02,5016,Chargeback Losses,Various merchants,January confirmed losses,15200.00,Journal Entry
+2026-02-02,5016,Chargeback Losses,Various merchants,February confirmed losses,18900.00,Journal Entry
+2026-01-10,5024,Contractors - Intl,DevTeam Asia,Development support - Singapore,0.00,Wire
+2026-02-10,5024,Contractors - Intl,DevTeam Asia,Development support - Singapore,0.00,Wire
