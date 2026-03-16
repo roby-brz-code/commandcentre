@@ -35,7 +35,7 @@ function loadCSV(filename) {
   }
 }
 
-const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i;
+const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|detail|vendor|what's in|composition|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i;
 
 function detectModel(messages) {
   const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user');
@@ -50,11 +50,13 @@ function loadFinancialData(mode) {
     return {
       pl: loadCSV('pl_live.csv'),
       bs: loadCSV('bs_live.csv'),
+      plDetail: loadCSV('pl_live_detail.csv'),
     };
   }
   return {
     pl: loadCSV('dummy_pl.csv'),
     bs: loadCSV('dummy_bs.csv'),
+    plDetail: loadCSV('dummy_pl_detail.csv'),
   };
 }
 
@@ -82,6 +84,8 @@ For example, if asked "What was software spend in January?":
 - Add context: "This is down 53% from December ($79,168), which included an annual renewal"
 - Note the trend: "Software has averaged $X/month over the last 6 months"
 - Suggest follow-ups: "Want me to break down the vendors?" / "How does this compare to the trailing 3-month average?"
+
+When the user asks about a specific expense or revenue line item (e.g. "what's in Software Subscriptions?"), use the P&L Transaction Detail data to break it down by vendor/description. Show a table of the vendors and amounts for that account in the requested period. If no period is specified, default to the most recent month.
 
 When transaction-level detail is available, proactively offer to drill down into the composition of any line item.
 
@@ -123,6 +127,16 @@ const PL_PROMPT = `
 ## Profit & Loss Data (from QuickBooks via Coupler.io)
 
 Monthly totals per account in CSV format (Report, Report date, Account id, Account name, Amount). Use this to answer questions about revenue, expenses, margins, and trends over time.
+
+`;
+
+const PL_DETAIL_PROMPT = `
+
+---
+
+## P&L Transaction Detail (vendor-level breakdowns)
+
+Line-item detail for major P&L accounts, showing vendor/description breakdowns per month. When a user asks what's inside an expense or revenue category, use this data to show the composition. CSV format: Report date, Account id, Account name, Vendor/Description, Amount.
 
 `;
 
@@ -170,12 +184,13 @@ export default async function handler(req, res) {
   }
 
   const playbook = loadPlaybookContent();
-  const { pl, bs } = loadFinancialData(mode === 'live' ? 'live' : 'demo');
+  const { pl, bs, plDetail } = loadFinancialData(mode === 'live' ? 'live' : 'demo');
 
   let systemContent = SYSTEM_PROMPT + (playbook || '(No playbook files found.)');
 
   if (pl || bs) {
     if (pl) systemContent += PL_PROMPT + pl;
+    if (plDetail) systemContent += PL_DETAIL_PROMPT + plDetail;
     if (bs) systemContent += BS_PROMPT + bs;
   } else {
     systemContent += FIN_UNAVAILABLE;

@@ -62,7 +62,7 @@ const comingSoonItems = [
 ];
 
 const externalLinks = [
-  { label: 'Settlement Dashboard', href: '#', placeholder: true },
+  { label: 'Settlement Dashboard', href: 'https://oak.admin.breeze.cash/settlements' },
   { label: 'Sigma Workbooks', href: 'https://app.sigmacomputing.com/breeze/workbook/2026-Revenue-and-Reconciliation-Workbook-4uxTjgyhPrDluNDcK12mTf' },
   { label: 'QuickBooks', href: 'https://app.qbo.intuit.com' },
   { label: 'TaxJar', href: 'https://app.taxjar.com' },

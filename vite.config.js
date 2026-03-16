@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { readFileSync, readdirSync, existsSync } from 'fs'
 import { join } from 'path'
 
-const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i
+const FINANCIAL_KEYWORDS = /\b(revenue|expense|spend|spending|cost|balance|trend|compare|comparison|margin|profit|loss|income|budget|variance|drill|breakdown|detail|vendor|what's in|composition|p&l|pl|bs|month-over-month|mom|yoy|year-over-year|cash|fees|growth|net income|gross|ebitda|opex|capex|arpu|burn|runway|payable|receivable|clearing|settlement|payin|payout|chargeback|refund|processing|interchange|assessment|software|payroll|rent|total|average|sum|quarterly|q[1-4]|january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b/i
 
 function detectModel(messages) {
   const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')
@@ -26,9 +26,9 @@ function loadCSV(filename) {
 
 function loadFinancialData(mode) {
   if (mode === 'live') {
-    return { pl: loadCSV('pl_live.csv'), bs: loadCSV('bs_live.csv') }
+    return { pl: loadCSV('pl_live.csv'), bs: loadCSV('bs_live.csv'), plDetail: loadCSV('pl_live_detail.csv') }
   }
-  return { pl: loadCSV('dummy_pl.csv'), bs: loadCSV('dummy_bs.csv') }
+  return { pl: loadCSV('dummy_pl.csv'), bs: loadCSV('dummy_bs.csv'), plDetail: loadCSV('dummy_pl_detail.csv') }
 }
 
 function apiPlugin() {
@@ -65,7 +65,7 @@ function apiPlugin() {
             .join('\n\n---\n\n')
         } catch { /* no playbook files yet */ }
 
-        const { pl: plData, bs: bsData } = loadFinancialData(mode === 'live' ? 'live' : 'demo')
+        const { pl: plData, bs: bsData, plDetail: plDetailData } = loadFinancialData(mode === 'live' ? 'live' : 'demo')
 
         let systemContent = `You are Luca, the Breeze Finance Operations Assistant — named after Luca Pacioli, the father of double-entry bookkeeping. You are the finance brain for Breeze, helping the team understand processes, query financial data, and run the finance function efficiently.
 
@@ -92,6 +92,8 @@ For example, if asked "What was software spend in January?":
 - Note the trend: "Software has averaged $X/month over the last 6 months"
 - Suggest follow-ups: "Want me to break down the vendors?" / "How does this compare to the trailing 3-month average?"
 
+When the user asks about a specific expense or revenue line item (e.g. "what's in Software Subscriptions?"), use the P&L Transaction Detail data to break it down by vendor/description. Show a table of the vendors and amounts for that account in the requested period. If no period is specified, default to the most recent month.
+
 When transaction-level detail is available, proactively offer to drill down into the composition of any line item.
 
 Format suggested follow-up questions as a bulleted list at the end of your response under a heading like **Want to dig deeper?** — make them specific to the data just discussed, not generic.
@@ -102,6 +104,7 @@ ${playbook || '(No playbook files found.)'}`
 
         if (plData || bsData) {
           if (plData) systemContent += `\n\n---\n\n## Profit & Loss Data (from QuickBooks via Coupler.io)\n\nMonthly totals per account in CSV format (Report, Report date, Account id, Account name, Amount).\n\n${plData}`
+          if (plDetailData) systemContent += `\n\n---\n\n## P&L Transaction Detail (vendor-level breakdowns)\n\nLine-item detail for major P&L accounts, showing vendor/description breakdowns per month. When a user asks what's inside an expense or revenue category, use this data to show the composition. CSV format: Report date, Account id, Account name, Vendor/Description, Amount.\n\n${plDetailData}`
           if (bsData) systemContent += `\n\n---\n\n## Balance Sheet Data (from QuickBooks via Coupler.io)\n\nMonthly snapshots in CSV format (account names as rows, months as columns).\n\n${bsData}`
         } else {
           systemContent += `\n\n---\n\n## Financial Data\n\nP&L and Balance Sheet data files are not available. You can only answer process/playbook questions.`

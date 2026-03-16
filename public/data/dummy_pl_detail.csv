@@ -1,0 +1,198 @@
+Report date,Account id,Account name,Vendor/Description,Amount
+2026-02-28,5010,Software Subscriptions,AWS (Infrastructure),6820
+2026-02-28,5010,Software Subscriptions,Datadog (Monitoring),2340
+2026-02-28,5010,Software Subscriptions,Slack (Communication),1890
+2026-02-28,5010,Software Subscriptions,Google Workspace,1450
+2026-02-28,5010,Software Subscriptions,Notion (Knowledge Base),680
+2026-02-28,5010,Software Subscriptions,GitHub Enterprise,1240
+2026-02-28,5010,Software Subscriptions,Jira (Project Mgmt),890
+2026-02-28,5010,Software Subscriptions,Figma (Design),520
+2026-02-28,5010,Software Subscriptions,1Password (Security),380
+2026-02-28,5010,Software Subscriptions,QuickBooks Online,790
+2026-02-28,5010,Software Subscriptions,Coupler.io (Data Sync),440
+2026-02-28,5010,Software Subscriptions,Sigma Computing (BI),1270
+2026-02-28,5006,Contractors,Acme Dev LLC (Backend Engineering),28400
+2026-02-28,5006,Contractors,Pixel Perfect (UI/UX Design),14200
+2026-02-28,5006,Contractors,DataVault Inc (Data Engineering),11800
+2026-02-28,5006,Contractors,ComplianceFirst (Regulatory Consulting),8640
+2026-02-28,5006,Contractors,CloudOps Partners (DevOps),6700
+2026-02-28,5004,Legal & Professional Services,Morrison & Foerster (Corporate Counsel),3200
+2026-02-28,5004,Legal & Professional Services,PwC (Tax Advisory),2100
+2026-02-28,5004,Legal & Professional Services,Moss Adams (Audit Prep),1420
+2026-02-28,5004,Legal & Professional Services,Perkins Coie (Regulatory),800
+2026-02-28,5001,KYC Verification Fees,Persona (Identity Verification),5740
+2026-02-28,5001,KYC Verification Fees,Middesk (Business Verification),2500
+2026-02-28,5009,Salaries & Wages,Engineering Team,58200
+2026-02-28,5009,Salaries & Wages,Finance Team,28400
+2026-02-28,5009,Salaries & Wages,Operations Team,21800
+2026-02-28,5009,Salaries & Wages,Product Team,13610
+2026-02-28,5002,Unallocated Expenses,Misc Office Supplies,4280
+2026-02-28,5002,Unallocated Expenses,Team Events,6120
+2026-02-28,5002,Unallocated Expenses,Conference Badges & Swag,4470
+2026-01-31,5010,Software Subscriptions,AWS (Infrastructure),12480
+2026-01-31,5010,Software Subscriptions,Datadog (Monitoring),2340
+2026-01-31,5010,Software Subscriptions,Slack (Communication),1890
+2026-01-31,5010,Software Subscriptions,Google Workspace,1450
+2026-01-31,5010,Software Subscriptions,Notion (Knowledge Base),680
+2026-01-31,5010,Software Subscriptions,GitHub Enterprise,1240
+2026-01-31,5010,Software Subscriptions,Jira (Project Mgmt),890
+2026-01-31,5010,Software Subscriptions,Figma (Design),520
+2026-01-31,5010,Software Subscriptions,1Password (Security),380
+2026-01-31,5010,Software Subscriptions,QuickBooks Online,790
+2026-01-31,5010,Software Subscriptions,Coupler.io (Data Sync),440
+2026-01-31,5010,Software Subscriptions,Sigma Computing (BI),1270
+2026-01-31,5010,Software Subscriptions,Cloudflare (CDN/Security),6200
+2026-01-31,5010,Software Subscriptions,TaxJar (Tax Automation),4900
+2026-01-31,5010,Software Subscriptions,HubSpot (CRM),2000
+2026-01-31,5006,Contractors,Acme Dev LLC (Backend Engineering),12400
+2026-01-31,5006,Contractors,Pixel Perfect (UI/UX Design),8200
+2026-01-31,5006,Contractors,DataVault Inc (Data Engineering),6800
+2026-01-31,5006,Contractors,ComplianceFirst (Regulatory Consulting),4250
+2026-01-31,5006,Contractors,CloudOps Partners (DevOps),4300
+2026-01-31,5004,Legal & Professional Services,Morrison & Foerster (Corporate Counsel),92400
+2026-01-31,5004,Legal & Professional Services,PwC (Tax Advisory),48200
+2026-01-31,5004,Legal & Professional Services,Moss Adams (Audit Prep),34600
+2026-01-31,5004,Legal & Professional Services,Perkins Coie (Regulatory),18780
+2026-01-31,5004,Legal & Professional Services,Deloitte (Transfer Pricing Study),6600
+2026-01-31,5001,KYC Verification Fees,Persona (Identity Verification),0
+2026-01-31,5001,KYC Verification Fees,Middesk (Business Verification),0
+2026-01-31,5009,Salaries & Wages,Engineering Team,38200
+2026-01-31,5009,Salaries & Wages,Finance Team,18400
+2026-01-31,5009,Salaries & Wages,Operations Team,13200
+2026-01-31,5009,Salaries & Wages,Product Team,8610
+2026-01-31,5002,Unallocated Expenses,Misc Office Supplies,18340
+2026-01-31,5002,Unallocated Expenses,Team Events,14200
+2026-01-31,5002,Unallocated Expenses,Conference Badges & Swag,8640
+2026-01-31,5002,Unallocated Expenses,Uncategorized Vendor Payments,5600
+2025-12-31,5010,Software Subscriptions,AWS (Infrastructure),8940
+2025-12-31,5010,Software Subscriptions,Datadog (Monitoring),2340
+2025-12-31,5010,Software Subscriptions,Slack (Communication),1890
+2025-12-31,5010,Software Subscriptions,Google Workspace,1450
+2025-12-31,5010,Software Subscriptions,Notion (Knowledge Base),680
+2025-12-31,5010,Software Subscriptions,GitHub Enterprise,1240
+2025-12-31,5010,Software Subscriptions,Jira (Project Mgmt),890
+2025-12-31,5010,Software Subscriptions,Figma (Design),520
+2025-12-31,5010,Software Subscriptions,1Password (Security),380
+2025-12-31,5010,Software Subscriptions,QuickBooks Online,790
+2025-12-31,5010,Software Subscriptions,Coupler.io (Data Sync),440
+2025-12-31,5010,Software Subscriptions,Sigma Computing (BI),1270
+2025-12-31,5010,Software Subscriptions,Cloudflare (CDN/Security - Annual),4200
+2025-12-31,5010,Software Subscriptions,Linear (Eng Planning),1200
+2025-12-31,5006,Contractors,Acme Dev LLC (Backend Engineering),22600
+2025-12-31,5006,Contractors,Pixel Perfect (UI/UX Design),12200
+2025-12-31,5006,Contractors,DataVault Inc (Data Engineering),9400
+2025-12-31,5006,Contractors,ComplianceFirst (Regulatory Consulting),7110
+2025-12-31,5006,Contractors,CloudOps Partners (DevOps),6200
+2025-12-31,5004,Legal & Professional Services,Morrison & Foerster (Corporate Counsel),14200
+2025-12-31,5004,Legal & Professional Services,PwC (Tax Advisory),8400
+2025-12-31,5004,Legal & Professional Services,Moss Adams (Audit Prep),5620
+2025-12-31,5004,Legal & Professional Services,Perkins Coie (Regulatory),2800
+2025-12-31,5015,Advertising & Marketing,Google Ads,22400
+2025-12-31,5015,Advertising & Marketing,LinkedIn Ads,12800
+2025-12-31,5015,Advertising & Marketing,Content Marketing (Freelance),8400
+2025-12-31,5015,Advertising & Marketing,Sponsorships & Events,4870
+2025-12-31,5015,Advertising & Marketing,Brand Design Assets,2800
+2025-12-31,5016,Chargeback Losses,Merchant A - Gaming Platform,14200
+2025-12-31,5016,Chargeback Losses,Merchant B - E-commerce,9800
+2025-12-31,5016,Chargeback Losses,Merchant C - SaaS Platform,6400
+2025-12-31,5016,Chargeback Losses,Merchant D - Marketplace,4280
+2025-12-31,5016,Chargeback Losses,Other Merchants (< $3k each),3200
+2025-12-31,5009,Salaries & Wages,Engineering Team,28200
+2025-12-31,5009,Salaries & Wages,Finance Team,14400
+2025-12-31,5009,Salaries & Wages,Operations Team,11200
+2025-12-31,5009,Salaries & Wages,Product Team,7620
+2025-12-31,5026,Salaries - Intl,Engineering (International),72400
+2025-12-31,5026,Salaries - Intl,Operations (International),28200
+2025-12-31,5026,Salaries - Intl,Compliance (International),16950
+2025-12-31,4001,Processing Revenue,Merchant A - Gaming Platform,1420800
+2025-12-31,4001,Processing Revenue,Merchant B - E-commerce,1180400
+2025-12-31,4001,Processing Revenue,Merchant C - SaaS Platform,842600
+2025-12-31,4001,Processing Revenue,Merchant D - Marketplace,624200
+2025-12-31,4001,Processing Revenue,Merchant E - Digital Goods,288400
+2025-12-31,4001,Processing Revenue,Long Tail Merchants (< $200k),159940
+2025-12-31,4002,PSP Fees,CKO Processing Fees,1284600
+2025-12-31,4002,PSP Fees,CKO Scheme Fees,312400
+2025-12-31,4002,PSP Fees,CKO Interchange Pass-through,161870
+2025-12-31,4003,Withdrawal Revenue,Crypto Offramp Fees,542200
+2025-12-31,4003,Withdrawal Revenue,Fiat Payout Fees,264400
+2025-12-31,4003,Withdrawal Revenue,Wire Transfer Fees,99710
+2025-11-30,5010,Software Subscriptions,AWS (Infrastructure),9200
+2025-11-30,5010,Software Subscriptions,Datadog (Monitoring),2340
+2025-11-30,5010,Software Subscriptions,Slack (Communication),1890
+2025-11-30,5010,Software Subscriptions,Google Workspace,1450
+2025-11-30,5010,Software Subscriptions,Notion (Knowledge Base),680
+2025-11-30,5010,Software Subscriptions,GitHub Enterprise,1240
+2025-11-30,5010,Software Subscriptions,Jira (Project Mgmt),890
+2025-11-30,5010,Software Subscriptions,Figma (Design),520
+2025-11-30,5010,Software Subscriptions,1Password (Security),380
+2025-11-30,5010,Software Subscriptions,QuickBooks Online,790
+2025-11-30,5010,Software Subscriptions,Coupler.io (Data Sync),440
+2025-11-30,5010,Software Subscriptions,Sigma Computing (BI),1270
+2025-11-30,5010,Software Subscriptions,Sentry (Error Tracking),4800
+2025-11-30,5010,Software Subscriptions,PagerDuty (On-call),1430
+2025-11-30,5006,Contractors,Acme Dev LLC (Backend Engineering),14200
+2025-11-30,5006,Contractors,Pixel Perfect (UI/UX Design),8800
+2025-11-30,5006,Contractors,DataVault Inc (Data Engineering),7200
+2025-11-30,5006,Contractors,ComplianceFirst (Regulatory Consulting),4440
+2025-11-30,5006,Contractors,CloudOps Partners (DevOps),3600
+2025-11-30,5015,Advertising & Marketing,Google Ads,20400
+2025-11-30,5015,Advertising & Marketing,LinkedIn Ads,12800
+2025-11-30,5015,Advertising & Marketing,Content Marketing (Freelance),8200
+2025-11-30,5015,Advertising & Marketing,Sponsorships & Events,4230
+2025-11-30,5015,Advertising & Marketing,Brand Design Assets,2800
+2025-11-30,5016,Chargeback Losses,Merchant A - Gaming Platform,8400
+2025-11-30,5016,Chargeback Losses,Merchant B - E-commerce,6200
+2025-11-30,5016,Chargeback Losses,Merchant C - SaaS Platform,4800
+2025-11-30,5016,Chargeback Losses,Merchant D - Marketplace,2560
+2025-11-30,5016,Chargeback Losses,Other Merchants (< $3k each),1800
+2025-11-30,4001,Processing Revenue,Merchant A - Gaming Platform,1428400
+2025-11-30,4001,Processing Revenue,Merchant B - E-commerce,1184200
+2025-11-30,4001,Processing Revenue,Merchant C - SaaS Platform,856800
+2025-11-30,4001,Processing Revenue,Merchant D - Marketplace,638400
+2025-11-30,4001,Processing Revenue,Merchant E - Digital Goods,280400
+2025-11-30,4001,Processing Revenue,Long Tail Merchants (< $200k),155030
+2025-10-31,5010,Software Subscriptions,AWS (Infrastructure),18400
+2025-10-31,5010,Software Subscriptions,Datadog (Monitoring),2340
+2025-10-31,5010,Software Subscriptions,Slack (Communication),1890
+2025-10-31,5010,Software Subscriptions,Google Workspace,1450
+2025-10-31,5010,Software Subscriptions,Notion (Knowledge Base),680
+2025-10-31,5010,Software Subscriptions,GitHub Enterprise,1240
+2025-10-31,5010,Software Subscriptions,Jira (Project Mgmt),890
+2025-10-31,5010,Software Subscriptions,Figma (Design),520
+2025-10-31,5010,Software Subscriptions,1Password (Security),380
+2025-10-31,5010,Software Subscriptions,QuickBooks Online,790
+2025-10-31,5010,Software Subscriptions,Coupler.io (Data Sync),440
+2025-10-31,5010,Software Subscriptions,Sigma Computing (BI),1270
+2025-10-31,5010,Software Subscriptions,Datadog (Annual True-up),14200
+2025-10-31,5010,Software Subscriptions,AWS Reserved Instance Prepay,4750
+2025-10-31,5006,Contractors,Acme Dev LLC (Backend Engineering),16200
+2025-10-31,5006,Contractors,Pixel Perfect (UI/UX Design),10200
+2025-10-31,5006,Contractors,DataVault Inc (Data Engineering),8400
+2025-10-31,5006,Contractors,ComplianceFirst (Regulatory Consulting),4820
+2025-10-31,5006,Contractors,CloudOps Partners (DevOps),3800
+2025-10-31,5015,Advertising & Marketing,Google Ads,24800
+2025-10-31,5015,Advertising & Marketing,LinkedIn Ads,14400
+2025-10-31,5015,Advertising & Marketing,Content Marketing (Freelance),9200
+2025-10-31,5015,Advertising & Marketing,Sponsorships & Events,6120
+2025-10-31,5015,Advertising & Marketing,Brand Design Assets,4000
+2025-10-31,5017,Insurance,D&O Policy (Annual Premium),48200
+2025-10-31,5017,Insurance,Cyber Liability (Annual),4120
+2025-10-31,5017,Insurance,E&O / Professional Liability,1500
+2025-09-30,5010,Software Subscriptions,AWS (Infrastructure),8200
+2025-09-30,5010,Software Subscriptions,Datadog (Monitoring),2340
+2025-09-30,5010,Software Subscriptions,Slack (Communication),1890
+2025-09-30,5010,Software Subscriptions,Google Workspace,1450
+2025-09-30,5010,Software Subscriptions,Notion (Knowledge Base),680
+2025-09-30,5010,Software Subscriptions,GitHub Enterprise,1240
+2025-09-30,5010,Software Subscriptions,Jira (Project Mgmt),890
+2025-09-30,5010,Software Subscriptions,Figma (Design),520
+2025-09-30,5010,Software Subscriptions,1Password (Security),380
+2025-09-30,5010,Software Subscriptions,QuickBooks Online,790
+2025-09-30,5010,Software Subscriptions,Coupler.io (Data Sync),440
+2025-09-30,5010,Software Subscriptions,Sigma Computing (BI),1270
+2025-09-30,5010,Software Subscriptions,Retool (Internal Tools),4200
+2025-09-30,5010,Software Subscriptions,LaunchDarkly (Feature Flags),2520
+2025-09-30,5004,Legal & Professional Services,Morrison & Foerster (Corporate Counsel),14200
+2025-09-30,5004,Legal & Professional Services,PwC (Tax Advisory),8400
+2025-09-30,5004,Legal & Professional Services,Moss Adams (Audit Prep),5680
+2025-09-30,5004,Legal & Professional Services,Perkins Coie (Regulatory),2800
