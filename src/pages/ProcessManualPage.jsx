@@ -165,13 +165,28 @@ const CLOSE_ACTION_CHIPS = [
   { label: 'Review Balance Sheet balances', query: 'Do a Balance Sheet review — check all major account balances and flag anything unusual.' },
 ];
 
-export default function ProcessManualPage({ dataMode = 'demo', consumePreload }) {
+export default function ProcessManualPage({ dataMode = 'demo', consumePreload, owlState, setOwlState, flashOwl }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [toasts, setToasts] = useState([]);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const idleTimerRef = useRef(null);
+  const msgCountRef = useRef(0);
+
+  // Idle detection: sleep after 10s of no typing
+  useEffect(() => {
+    function resetIdle() {
+      clearTimeout(idleTimerRef.current);
+      if (owlState === 'sleeping' && setOwlState) setOwlState('idle');
+      idleTimerRef.current = setTimeout(() => {
+        if (setOwlState && !isLoading) setOwlState('sleeping');
+      }, 10000);
+    }
+    resetIdle();
+    return () => clearTimeout(idleTimerRef.current);
+  }, [input, messages, isLoading, owlState, setOwlState]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -180,6 +195,7 @@ export default function ProcessManualPage({ dataMode = 'demo', consumePreload })
   useEffect(() => {
     setMessages([]);
     setInput('');
+    msgCountRef.current = 0;
   }, [dataMode]);
 
   useEffect(() => {
@@ -197,6 +213,7 @@ export default function ProcessManualPage({ dataMode = 'demo', consumePreload })
     setMessages(newMessages);
     setInput('');
     setIsLoading(true);
+    if (setOwlState) setOwlState('thinking');
 
     const assistantMessage = { role: 'assistant', content: '' };
 
@@ -262,6 +279,7 @@ export default function ProcessManualPage({ dataMode = 'demo', consumePreload })
       setMessages([...newMessages, { ...assistantMessage }]);
     } finally {
       setIsLoading(false);
+      if (flashOwl) flashOwl('excited', 500);
       inputRef.current?.focus();
     }
   }
@@ -316,7 +334,9 @@ export default function ProcessManualPage({ dataMode = 'demo', consumePreload })
               </button>
             </div>
             {messages.map((msg, i) => (
-              <MessageBubble key={i} message={msg} onFollowUp={sendMessage} />
+              <div key={i} className="msg-enter">
+                <MessageBubble message={msg} onFollowUp={sendMessage} />
+              </div>
             ))}
             {isLoading && messages[messages.length - 1]?.role === 'user' && <TypingIndicator />}
             <div ref={messagesEndRef} />
@@ -331,7 +351,11 @@ export default function ProcessManualPage({ dataMode = 'demo', consumePreload })
             ref={inputRef}
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              const prev = input;
+              setInput(e.target.value);
+              if (!prev && e.target.value && flashOwl) flashOwl('excited', 500);
+            }}
             placeholder="Ask Luca about Breeze finance..."
             disabled={isLoading}
             className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-breeze-blue/20 focus:border-breeze-blue disabled:opacity-50 transition-colors"

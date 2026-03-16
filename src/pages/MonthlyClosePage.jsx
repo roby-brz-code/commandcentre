@@ -121,9 +121,10 @@ function TaskCard({ task, index, locked, onAssigneeChange, assignees, onCreateAs
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => { if (isLucaPrepared && onCardClick) onCardClick(task); }}
-          className={`bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 mb-2 transition-all ${
+          className={`card-stagger hover-lift bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 mb-2 transition-all ${
             snapshot.isDragging ? 'shadow-lg scale-[1.02]' : 'shadow-[0_1px_4px_rgba(0,0,0,0.04)]'
           } ${isComplete ? 'opacity-70' : ''} ${isLucaPrepared ? 'border-breeze-blue/30 cursor-pointer hover:border-breeze-blue/60' : ''}`}
+          style={{ ...provided.draggableProps.style, animationDelay: `${index * 50}ms` }}
         >
           <p className={`text-sm font-medium text-[#0E1A2B] mb-2 leading-snug ${isComplete ? 'line-through text-gray-400' : ''}`}>
             {task.task}

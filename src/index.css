@@ -16,6 +16,99 @@ body {
   margin: 0;
 }
 
+/* ── Owl mascot animations ── */
+@keyframes owl-wiggle {
+  0%, 100% { transform: rotate(0deg) scale(1.1); }
+  25% { transform: rotate(-8deg) scale(1.1); }
+  75% { transform: rotate(8deg) scale(1.1); }
+}
+
+@keyframes owl-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes owl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes owl-sleepy {
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  50% { transform: scaleY(0.85) scaleX(1.04); }
+}
+
+@keyframes owl-perk-up {
+  0% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.15) translateY(-4px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.owl-mascot {
+  transition: transform 0.2s ease;
+}
+
+.owl-mascot:hover {
+  animation: owl-wiggle 0.5s ease-in-out;
+}
+
+.owl-mascot.sleeping img {
+  animation: owl-sleepy 2.5s ease-in-out infinite;
+}
+
+.owl-mascot.thinking img {
+  animation: owl-bob 1s ease-in-out infinite;
+}
+
+.owl-mascot.excited img {
+  animation: owl-perk-up 0.4s ease-out;
+}
+
+.owl-mascot.spinning img {
+  animation: owl-spin 0.6s ease-in-out;
+}
+
+/* ── Page transitions ── */
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.page-enter {
+  animation: page-fade-in 0.2s ease-out;
+}
+
+/* ── Chat message entrance ── */
+@keyframes msg-slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg-enter {
+  animation: msg-slide-in 0.2s ease-out both;
+}
+
+/* ── Kanban card stagger ── */
+@keyframes card-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-stagger {
+  animation: card-fade-in 0.25s ease-out both;
+}
+
+/* ── Hover lift for clickable cards ── */
+.hover-lift {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Luca thinking (existing, kept for typing indicator dots) ── */
 @keyframes luca-thinking {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }

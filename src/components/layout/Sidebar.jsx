@@ -76,13 +76,33 @@ const externalLinks = [
   { label: 'CKO Hub', href: 'https://hub.checkout.com' },
 ];
 
-export default function Sidebar({ activeTab, onTabChange, dataMode, onDataModeChange }) {
+import { useRef, useCallback } from 'react';
+
+export default function Sidebar({ activeTab, onTabChange, dataMode, onDataModeChange, owlState, flashOwl }) {
+  const clickTimesRef = useRef([]);
+
+  const handleOwlClick = useCallback(() => {
+    const now = Date.now();
+    const times = clickTimesRef.current;
+    times.push(now);
+    // Keep only clicks in the last 1.5s
+    while (times.length > 0 && now - times[0] > 1500) times.shift();
+    if (times.length >= 5) {
+      flashOwl('spinning', 600);
+      clickTimesRef.current = [];
+    } else {
+      onTabChange('chat');
+    }
+  }, [onTabChange, flashOwl]);
+
   return (
     <aside className="w-60 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
       {/* Brand */}
       <div className="px-5 py-5 border-b border-gray-100">
-        <button onClick={() => onTabChange('chat')} className="flex items-center gap-2.5 cursor-pointer">
-          <img src="/luca-owl-sm.png" alt="Luca" className="w-8 h-8 rounded-lg object-cover" />
+        <button onClick={handleOwlClick} className="flex items-center gap-2.5 cursor-pointer">
+          <div className={`owl-mascot ${owlState || 'idle'}`}>
+            <img src="/luca-owl-sm.png" alt="Luca" className="w-8 h-8 rounded-lg object-cover" />
+          </div>
           <div>
             <span className="text-lg font-semibold text-deep-navy leading-none">Luca</span>
             <p className="text-[10px] text-gray-400 leading-tight mt-0.5">Finance Command Center</p>

@@ -1,8 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend,
 } from 'recharts';
+
+function useCountUp(target, duration = 1000) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef(null);
+  useEffect(() => {
+    const start = performance.now();
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out quad
+      const eased = 1 - (1 - progress) * (1 - progress);
+      setValue(target * eased);
+      if (progress < 1) rafRef.current = requestAnimationFrame(tick);
+    }
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [target, duration]);
+  return value;
+}
 
 const TREND_DATA = [
   { month: 'Mar 25', total: 4.8, mfp: 0.3, net: 4.5 },
@@ -63,16 +82,24 @@ function fmtFull(n) {
   return `$${n.toLocaleString()}`;
 }
 
-function SummaryCard({ label, value, change, changeColor, accent, onClick }) {
+function AnimatedValue({ target, prefix = '$', suffix = 'M', decimals = 1 }) {
+  const v = useCountUp(Math.abs(target), 1000);
+  const sign = target < 0 ? '-' : '';
+  return <>{sign}{prefix}{v.toFixed(decimals)}{suffix}</>;
+}
+
+function SummaryCard({ label, numericTarget, suffix, decimals, change, changeColor, accent, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] border border-[#E2E8F0] p-5 text-left transition-colors hover:border-breeze-blue/30 cursor-pointer ${
+      className={`hover-lift bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] border border-[#E2E8F0] p-5 text-left cursor-pointer ${
         accent ? 'border-l-[3px] border-l-breeze-blue' : ''
       }`}
     >
       <p className="text-xs font-medium text-[#64748B] mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${accent ? 'text-breeze-blue' : 'text-[#0E1A2B]'}`}>{value}</p>
+      <p className={`text-2xl font-bold tabular-nums ${accent ? 'text-breeze-blue' : 'text-[#0E1A2B]'}`}>
+        <AnimatedValue target={numericTarget} suffix={suffix || 'M'} decimals={decimals ?? 1} />
+      </p>
       {change && (
         <p className={`text-xs font-medium mt-1 ${changeColor || 'text-[#16A34A]'}`}>{change}</p>
       )}
@@ -150,34 +177,36 @@ export default function CashDashboardPage({ onNavigateToChat }) {
         <div className="grid grid-cols-5 gap-4">
           <SummaryCard
             label="Total Cash Held"
-            value="$28.6M"
+            numericTarget={28.6}
             change="&#9650; +4.1% vs last month"
             onClick={() => ask("What's our total cash held across all accounts?")}
           />
           <SummaryCard
             label="Settlement Owed to Merchants"
-            value="-$3.8M"
+            numericTarget={-3.8}
             change="Merchant Funds Payable"
             changeColor="text-[#DC2626]"
             onClick={() => ask('Show me the current merchant settlement obligations')}
           />
           <SummaryCard
             label="Net Attributable Cash"
-            value="$24.8M"
+            numericTarget={24.8}
             change="&#9650; +4.8% vs last month"
             accent
             onClick={() => ask("What's our net attributable cash after deducting merchant obligations?")}
           />
           <SummaryCard
             label="Crypto Wallets"
-            value="$3.1M"
+            numericTarget={3.1}
             change="3 wallets"
             changeColor="text-[#64748B]"
             onClick={() => ask('Show me the current crypto wallet balances')}
           />
           <SummaryCard
             label="Credit Cards Outstanding"
-            value="-$310K"
+            numericTarget={-310}
+            suffix="K"
+            decimals={0}
             change="3 cards"
             changeColor="text-[#DC2626]"
             onClick={() => ask("What's the current credit card outstanding balance?")}
@@ -284,7 +313,7 @@ export default function CashDashboardPage({ onNavigateToChat }) {
           {/* Settlement obligations */}
           <button
             onClick={() => ask('Show me the current merchant settlement obligations')}
-            className="bg-white rounded-xl border border-[#E2E8F0] shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5 text-left hover:border-breeze-blue/30 transition-colors cursor-pointer"
+            className="hover-lift bg-white rounded-xl border border-[#E2E8F0] shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5 text-left hover:border-breeze-blue/30 cursor-pointer"
           >
             <h2 className="text-sm font-semibold text-[#0E1A2B] mb-3">Settlement Obligations</h2>
 
